@@ -103,7 +103,7 @@ function NodeArt({ kind, unitPosition }: { kind: NodeKind; unitPosition: number 
   return <Star fill="currentColor" strokeWidth={2.5} />;
 }
 
-function LessonNode({ lesson, skill, index, unitLocked, unitPosition }: { lesson: Lesson; skill: Skill; index: number; unitLocked: boolean; unitPosition: number }) {
+function LessonNode({ lesson, skill, index, unitLocked, unitPosition, open, onToggle }: { lesson: Lesson; skill: Skill; index: number; unitLocked: boolean; unitPosition: number; open: boolean; onToggle: () => void }) {
   const router = useRouter();
   const completed = lesson.completed || skill.state === "COMPLETED" || lesson.position <= skill.crowns;
   const current = !unitLocked && !completed && skill.state !== "LOCKED" && lesson.position === Math.min(skill.crowns + 1, skill.total_crowns);
@@ -114,16 +114,32 @@ function LessonNode({ lesson, skill, index, unitLocked, unitPosition }: { lesson
   const mascotOffsets = [132, -118, 120];
   const offset = kind === "duo" ? mascotOffsets[Math.min(unitPosition - 1, mascotOffsets.length - 1)] : offsets[index % offsets.length];
   const label = `${skill.title}, lesson ${lesson.position}${jump ? ", jump here" : current ? ", start here" : completed ? ", completed" : ", locked"}`;
+  const cardTitle = kind === "trophy" ? `Unit ${unitPosition} review` : unitTitles[unitPosition - 1] ?? skill.title;
+
+  const activate = () => {
+    if (interactive) {
+      router.push(`/lesson/${lesson.id}`);
+      return;
+    }
+    onToggle();
+  };
 
   return (
-    <motion.div className={`lesson-node-wrap kind-${kind} mascot-unit-${unitPosition}`} style={{ left: `${offset}px` }} initial={{ opacity: 0, scale: 0.88 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-40px" }}>
+    <motion.div className={`lesson-node-wrap kind-${kind} mascot-unit-${unitPosition} ${open ? "node-details-open" : ""}`} style={{ left: `${offset}px` }} initial={{ opacity: 0, scale: 0.88 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-40px" }}>
       {current && <span className="node-callout start">START</span>}
       {jump && <span className="node-callout jump">JUMP HERE?</span>}
       <span className={`node-pedestal ${current ? "current" : ""} ${completed ? "completed" : ""} ${locked ? "locked" : ""} ${jump ? "jump" : ""}`}>
-        <button className="path-node" disabled={!interactive} onClick={() => router.push(`/lesson/${lesson.id}`)} aria-label={label}>
+        <motion.button className="path-node" onClick={(event) => { event.stopPropagation(); activate(); }} aria-label={label} aria-expanded={locked ? open : undefined} whileTap={{ y: 6, scale: 0.88 }} transition={{ type: "spring", stiffness: 520, damping: 24 }}>
           <NodeArt kind={kind} unitPosition={unitPosition} />
-        </button>
+        </motion.button>
       </span>
+      {locked && open && (
+        <motion.aside className="node-info-card" role="status" initial={{ opacity: 0, y: -10, scale: 0.94 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: "spring", stiffness: 420, damping: 28 }} onClick={(event) => event.stopPropagation()}>
+          <b>{cardTitle}</b>
+          <p>Complete all levels above to<br />unlock this!</p>
+          <span>LOCKED</span>
+        </motion.aside>
+      )}
     </motion.div>
   );
 }
@@ -158,6 +174,7 @@ function LearnRail() {
 
 function CoursePathView({ data }: { data: CoursePath }) {
   const [activeUnitId, setActiveUnitId] = useState(data.units[0]?.id ?? 0);
+  const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null);
   const activeUnit = data.units.find((unit) => unit.id === activeUnitId) ?? data.units[0];
 
   useEffect(() => {
@@ -188,7 +205,7 @@ function CoursePathView({ data }: { data: CoursePath }) {
   const activeColor = unitColors[(activeUnit.position - 1) % unitColors.length];
 
   return (
-    <div className="learning-path">
+    <div className="learning-path" onClick={() => setSelectedLessonId(null)}>
       <header className={`section-banner unit-banner unit-${activeColor}`} aria-live="polite">
         <div>
           <small><ChevronLeft /> SECTION 1, UNIT {activeUnit.position}</small>
@@ -206,7 +223,7 @@ function CoursePathView({ data }: { data: CoursePath }) {
           <article key={unit.id} data-unit-id={unit.id} className={`unit-section unit-${unitColors[(unit.position - 1) % unitColors.length]}`}>
             {unit.position > 1 && <div className="unit-divider"><span>{unitTitles[unit.position - 1] ?? unit.title}</span></div>}
             <div className="path lesson-path">
-              {allLessons.map(({ lesson, skill }, index) => <LessonNode key={lesson.id} lesson={lesson} skill={skill} index={index} unitLocked={unitLocked} unitPosition={unit.position} />)}
+              {allLessons.map(({ lesson, skill }, index) => <LessonNode key={lesson.id} lesson={lesson} skill={skill} index={index} unitLocked={unitLocked} unitPosition={unit.position} open={selectedLessonId === lesson.id} onToggle={() => setSelectedLessonId((current) => current === lesson.id ? null : lesson.id)} />)}
             </div>
           </article>
         );
