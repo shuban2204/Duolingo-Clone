@@ -130,8 +130,8 @@ function LessonNode({ lesson, skill, index, unitLocked, unitPosition, open, onTo
   const jump = unitLocked && index === 0;
   const interactive = completed || current || jump;
   const kind = jump ? "jump" : nodeKinds[index % nodeKinds.length];
-  const mascotOffsets = [132, -118, 120];
-  const offset = kind === "duo" ? mascotOffsets[Math.min(unitPosition - 1, mascotOffsets.length - 1)] : offsets[index % offsets.length];
+  const pathDirection = unitPosition % 2 === 0 ? -1 : 1;
+  const offset = kind === "duo" ? 132 * pathDirection : offsets[index % offsets.length] * pathDirection;
   const label = `${skill.title}, lesson ${lesson.position}${jump ? ", jump here" : current ? ", start here" : completed ? ", completed" : ", locked"}`;
   const cardTitle = kind === "trophy" ? `Unit ${unitPosition} review` : unitTitles[unitPosition - 1] ?? skill.title;
 

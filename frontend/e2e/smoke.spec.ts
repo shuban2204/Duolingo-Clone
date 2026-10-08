@@ -91,6 +91,29 @@ test("learning path shows progress callouts and animated section mascots", async
   await expect(page.locator(".path-bee-two")).toHaveCount(1);
   await expect(page.locator(".node-pedestal.jump .path-node").first()).toBeEnabled();
 
+  const unitCenters = await page.locator(".unit-section").evaluateAll((units) => units.slice(0, 2).map((unit) => {
+    const unitBox = unit.getBoundingClientRect();
+    const lessons = unit.querySelectorAll<HTMLElement>(".lesson-node-wrap:not(.kind-duo)");
+    const lesson = lessons[2] ?? lessons[0];
+    const mascot = unit.querySelector<HTMLElement>(".lesson-node-wrap.kind-duo");
+    const lessonBox = lesson?.getBoundingClientRect();
+    const mascotBox = mascot?.getBoundingClientRect();
+    return {
+      center: unitBox.left + unitBox.width / 2,
+      lesson: lessonBox ? lessonBox.left + lessonBox.width / 2 : 0,
+      mascot: mascotBox ? mascotBox.left + mascotBox.width / 2 : 0,
+    };
+  }));
+  expect(unitCenters[0].lesson).toBeLessThan(unitCenters[0].center);
+  expect(unitCenters[0].mascot).toBeGreaterThan(unitCenters[0].center);
+  expect(unitCenters[1].lesson).toBeGreaterThan(unitCenters[1].center);
+  expect(unitCenters[1].mascot).toBeLessThan(unitCenters[1].center);
+
+  const chest = page.locator(".path-chest").first();
+  await expect(chest).toBeVisible();
+  await expect(chest.locator("i")).toHaveCount(1);
+  await expect(chest.locator("b")).toHaveCount(1);
+
   const currentNode = page.locator(".node-pedestal.current .path-node").first();
   await currentNode.hover();
   const raisedTransform = await currentNode.evaluate((element) => getComputedStyle(element).transform);
