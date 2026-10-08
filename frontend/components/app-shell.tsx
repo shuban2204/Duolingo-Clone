@@ -3,7 +3,7 @@
 import { api } from "@/lib/api";
 import type { User } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
-import { Flame, Gem, Heart, MoreHorizontal, Trophy } from "lucide-react";
+import { MoreHorizontal, Trophy } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
@@ -69,8 +69,20 @@ function NavIcon({ name, avatarConfig }: { name: typeof links[number]["icon"] | 
   return <span className={`nav-art nav-art-${name}`} aria-hidden="true"><i /></span>;
 }
 
+function StreakIcon({ inactive }: { inactive: boolean }) {
+  return <svg className={`status-icon streak-icon ${inactive ? "inactive" : ""}`} viewBox="0 0 32 36" aria-hidden="true"><path d="M18.7 1.5c1.2 6.8-5.9 9.2-7.9 14.8-1.4-1.8-2-3.7-1.8-5.8C4.8 14 2.4 18.4 3.1 23.7 4 31 9.4 35 16.2 35c7.5 0 13-5.1 13-12.5 0-6.3-4.1-12.6-10.5-21Z" fill="currentColor"/><path d="M16.3 17.2c3.8 4 5.1 6.5 4.7 9.1-.4 2.8-2.3 4.7-5 4.7-2.9 0-5-2.1-5-5.1 0-2.8 1.8-5.6 5.3-8.7Z" className="streak-core"/></svg>;
+}
+
+function GemIcon() {
+  return <svg className="status-icon gem-icon" viewBox="0 0 34 38" aria-hidden="true"><path d="M17 1.8 31 9v19.1L17 36 3 28.1V9Z" fill="#168dcc"/><path d="M17 1.8 31 9v17.5L17 34.4 3 26.5V9Z" fill="#1cb0f6" stroke="#f4f7f8" strokeWidth="2.8" strokeLinejoin="round"/><path d="m10.1 11.2 5.6-3.1 2.9 1.6-5.7 3.2Z" fill="#84d8ff"/></svg>;
+}
+
+function HeartsIcon() {
+  return <svg className="status-icon hearts-icon" viewBox="0 0 36 36" aria-hidden="true"><path d="M18 33 4.8 20.2C-1.3 14.1 2.4 4.6 10.2 4.6c3.4 0 5.8 1.8 7.8 4.3 2-2.5 4.4-4.3 7.8-4.3 7.8 0 11.5 9.5 5.4 15.6Z" fill="#d33131"/><path d="M18 30.2 5.8 18.5C1 13.8 3.8 6.6 10.2 6.6c3.7 0 6.1 2.5 7.8 5.2 1.7-2.7 4.1-5.2 7.8-5.2 6.4 0 9.2 7.2 4.4 11.9Z" fill="#ff4b4b" stroke="#f4f7f8" strokeWidth="2.4" strokeLinejoin="round"/></svg>;
+}
+
 export function TopStats({ user }: { user: User }) {
-  return <div className="top-stats"><button className="stat" title="Spanish course"><span className="mini-flag" /> <span>{user.course_score}</span></button><button className="stat" title="Current streak" style={{ color: "var(--orange)" }}><Flame fill="currentColor" /> {user.current_streak}</button><button className="stat" title="Gems" style={{ color: "var(--blue)" }}><Gem fill="currentColor" /> {user.gems}</button><Link className="stat" href="/shop" title="Hearts" style={{ color: "var(--red)" }}><Heart fill="currentColor" /> {user.hearts}</Link></div>;
+  return <div className="top-stats"><button className="stat course-stat" title="Spanish course" aria-label="Spanish course"><span className="mini-flag" aria-hidden="true" /></button><button className={`stat streak-stat ${user.current_streak === 0 ? "inactive" : ""}`} title="Current streak"><StreakIcon inactive={user.current_streak === 0} /> <span>{user.current_streak}</span></button><button className="stat gem-stat" title="Gems"><GemIcon /> <span>{user.gems}</span></button><Link className="stat hearts-stat" href="/shop" title="Hearts"><HeartsIcon /> <span>{user.hearts}</span></Link></div>;
 }
 
 function Navigation({ mobile = false }: { mobile?: boolean }) {

@@ -64,6 +64,11 @@ test("learning path shows progress callouts and animated section mascots", async
   await page.goto("/learn");
 
   await expect(page.locator(".node-callout.start")).toHaveCount(1, { timeout: 90_000 });
+  await expect(page.locator(".course-stat .mini-flag")).toBeVisible();
+  await expect(page.locator(".course-stat")).toHaveText("");
+  await expect(page.locator(".streak-stat .streak-icon")).toBeVisible();
+  await expect(page.locator(".gem-stat .gem-icon")).toBeVisible();
+  await expect(page.locator(".hearts-stat .hearts-icon")).toBeVisible();
   await expect(page.locator(".path-node").first()).toHaveAccessibleName(/start here/i);
   const lockedNode = page.locator(".path-node").nth(1);
   await expect(lockedNode).toBeEnabled();
