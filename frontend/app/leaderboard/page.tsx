@@ -1,0 +1,5 @@
+"use client";
+import { AppShell } from "@/components/app-shell";import {PageHeading} from "@/components/page-heading";import {api} from "@/lib/api";import {useQuery} from "@tanstack/react-query";
+type Board={league:string;entries:{rank:number;id:number;name:string;avatar:string;xp:number;is_current:boolean;zone:string}[]};
+export default function Leaderboard(){const{data}=useQuery({queryKey:["leaderboard"],queryFn:()=>api<Board>("/leaderboard")});return <AppShell><PageHeading emoji="🏆" title={`${data?.league??"Gold"} League`} description="The top learners advance to the next league!"/><div>{data?.entries.map(row=><div className="list-card" key={row.id} style={{background:row.is_current?"var(--green-soft)":"transparent"}}><b style={{width:28,color:row.rank<=3?"var(--yellow)":"var(--muted)"}}>{row.rank}</b><span style={{fontSize:30}}>👤</span><strong style={{flex:1}}>{row.name}{row.is_current&&" (you)"}</strong><b style={{color:"var(--orange)"}}>⚡ {row.xp} XP</b></div>)}</div></AppShell>}
+

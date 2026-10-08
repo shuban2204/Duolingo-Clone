@@ -1,0 +1,1 @@
+export function PageHeading({emoji,title,description}:{emoji:string;title:string;description:string}){return <header className="page-heading"><div className="emoji">{emoji}</div><h1>{title}</h1><p>{description}</p></header>}
