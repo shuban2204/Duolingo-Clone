@@ -176,10 +176,17 @@ function LearnRail() {
         <div className="super-mascot" aria-hidden="true"><Duo size={76} state="celebrate" /></div>
         <button className="raised super-button" onClick={() => window.alert("Super Duolingo is coming soon in this educational clone.")}>TRY 1 WEEK FREE</button>
       </div>
-      <div className="card learn-side-card league-lock-card">
-        <h3>Unlock Leaderboards!</h3>
-        <div><span className="league-shield">🔒</span><p>Complete 2 more lessons to start competing</p></div>
-      </div>
+      <Link href="/leaderboard" className="card learn-side-card league-lock-card" style={{ display: "block" }}>
+        <h3>{user.leaderboard_unlocked ? "Bronze League" : "Unlock Leaderboards!"}</h3>
+        <div>
+          <span className="league-shield">{user.leaderboard_unlocked ? "🏆" : "🔒"}</span>
+          <p>
+            {user.leaderboard_unlocked
+              ? "You're competing in Bronze League! View rankings"
+              : `Complete ${user.lessons_to_unlock_leaderboard ?? Math.max(1, 10 - (user.completed_lessons ?? 0))} more lesson${(user.lessons_to_unlock_leaderboard ?? (10 - (user.completed_lessons ?? 0))) === 1 ? "" : "s"} to start competing`}
+          </p>
+        </div>
+      </Link>
       <div className="card learn-side-card daily-quest-card">
         <h3><span>Daily Quests</span><Link href="/quests">VIEW ALL</Link></h3>
         <div className="quest-row"><span className="quest-bolt">⚡</span><div><b>Earn {user.daily_goal} XP</b><div className="progress-track"><div className="progress-fill" style={{ width: `${goal}%` }} /></div><small>{user.daily_xp} / {user.daily_goal}</small></div><span className="quest-chest">🔐</span></div>

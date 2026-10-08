@@ -3,7 +3,7 @@
 import { api } from "@/lib/api";
 import type { User } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
-import { MoreHorizontal, Trophy } from "lucide-react";
+import { Lock, MoreHorizontal, Trophy } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
@@ -194,7 +194,48 @@ function Navigation({ mobile = false }: { mobile?: boolean }) {
 
 export function RightRail({ user }: { user: User }) {
   const goal = Math.min(100, user.daily_xp / user.daily_goal * 100);
-  return <aside className="right-rail"><div className="card rail-card"><h3 className="rail-title"><span>Daily goal</span><Link href="/quests">VIEW</Link></h3><div className="rail-progress"><span>⚡</span><div><div className="progress-track"><div className="progress-fill" style={{ width: `${goal}%` }} /></div><p className="muted">{user.daily_xp} / {user.daily_goal} XP</p></div></div></div><div className="card rail-card"><h3 className="rail-title"><span>Gold league</span><Trophy color="var(--yellow)" fill="var(--yellow)" /></h3><p className="muted">You&apos;re competing with 7 other learners this week.</p><Link href="/leaderboard" className="blue-link">VIEW LEAGUE</Link></div><div className="card rail-card"><h3 className="rail-title">🔥 {user.current_streak} day streak</h3><p className="muted">Complete a lesson today to keep your streak alive.</p></div></aside>;
+  const isUnlocked = user.leaderboard_unlocked ?? ((user.completed_lessons ?? 0) >= 10);
+  const remaining = user.lessons_to_unlock_leaderboard ?? Math.max(1, 10 - (user.completed_lessons ?? 0));
+
+  return (
+    <aside className="right-rail">
+      <div className="card rail-card">
+        <h3 className="rail-title">
+          <span>Daily goal</span>
+          <Link href="/quests">VIEW</Link>
+        </h3>
+        <div className="rail-progress">
+          <span>⚡</span>
+          <div>
+            <div className="progress-track">
+              <div className="progress-fill" style={{ width: `${goal}%` }} />
+            </div>
+            <p className="muted">{user.daily_xp} / {user.daily_goal} XP</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="card rail-card">
+        <h3 className="rail-title">
+          <span>{isUnlocked ? "Bronze league" : "Leaderboards"}</span>
+          {isUnlocked ? <Trophy color="var(--yellow)" fill="var(--yellow)" /> : <Lock size={18} color="var(--muted)" />}
+        </h3>
+        <p className="muted">
+          {isUnlocked
+            ? "You're competing with other learners this week."
+            : `Complete ${remaining} more lesson${remaining === 1 ? "" : "s"} to unlock leagues.`}
+        </p>
+        <Link href="/leaderboard" className="blue-link">
+          {isUnlocked ? "VIEW LEAGUE" : "LEARN MORE"}
+        </Link>
+      </div>
+
+      <div className="card rail-card">
+        <h3 className="rail-title">🔥 {user.current_streak} day streak</h3>
+        <p className="muted">Complete a lesson today to keep your streak alive.</p>
+      </div>
+    </aside>
+  );
 }
 
 export function AppShell({ children, rightRail, showTopStats = true }: { children: ReactNode; rightRail?: ReactNode | false; showTopStats?: boolean }) {

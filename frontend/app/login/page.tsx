@@ -1,7 +1,8 @@
 "use client";
 
 import { AuthDivider, AuthLayout, AuthLegal, SocialButton } from "@/components/auth-layout";
-import { setUserId } from "@/lib/api";
+import { api, setUserId } from "@/lib/api";
+import type { User } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { z } from "zod";
@@ -17,7 +18,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const result = loginSchema.safeParse({ identity, password });
     if (!result.success) {
@@ -25,7 +26,24 @@ export default function LoginPage() {
       return;
     }
     setError("");
-    setUserId(1);
+    const clean = identity.trim();
+    try {
+      const users = await api<{ id: number; name: string }[]>("/users");
+      const matched = users.find((u) => u.name.toLowerCase() === clean.toLowerCase());
+      if (matched) {
+        setUserId(matched.id);
+        localStorage.setItem("duolingo_username", matched.name);
+      } else {
+        const newUser = await api<User>("/users", {
+          method: "POST",
+          body: JSON.stringify({ name: clean }),
+        });
+        setUserId(newUser.id);
+        localStorage.setItem("duolingo_username", newUser.name);
+      }
+    } catch {
+      localStorage.setItem("duolingo_username", clean);
+    }
     router.push("/learn");
   }
 

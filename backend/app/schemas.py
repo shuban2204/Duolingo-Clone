@@ -6,6 +6,12 @@ from pydantic import BaseModel, ConfigDict, Field
 from .models import AttemptMode
 
 
+class UserCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    avatar: str = "duo"
+    theme: Literal["light", "dark"] = "dark"
+
+
 class UserUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=80)
     theme: Literal["light", "dark"] | None = None

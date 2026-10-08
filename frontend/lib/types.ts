@@ -3,6 +3,7 @@ export type User = {
   seconds_to_next_heart: number; gems: number; current_streak: number; longest_streak: number;
   streak_freezes: number; daily_goal: number; daily_xp: number; league: string; theme: "light" | "dark";
   sound_enabled: boolean; course_score: number; quests_completed: number;
+  completed_lessons?: number; leaderboard_unlocked?: boolean; lessons_to_unlock_leaderboard?: number;
 };
 export type ExerciseType = "MULTIPLE_CHOICE" | "WORD_BANK" | "MATCH_PAIRS" | "FILL_BLANK" | "TYPE_ANSWER";
 export type Exercise = { id: number; type: ExerciseType; instruction: string; prompt: string; payload: Record<string, unknown>; audio_text: string | null; position: number };

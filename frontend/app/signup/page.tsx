@@ -1,7 +1,8 @@
 "use client";
 
 import { AuthDivider, AuthLayout, AuthLegal, SocialButton } from "@/components/auth-layout";
-import { setUserId } from "@/lib/api";
+import { api, setUserId } from "@/lib/api";
+import type { User } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { z } from "zod";
@@ -33,7 +34,7 @@ export default function SignupPage() {
     setStep("account");
   }
 
-  function createAccount(event: FormEvent<HTMLFormElement>) {
+  async function createAccount(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const result = accountSchema.safeParse({ name, email, password });
     if (!result.success) {
@@ -41,7 +42,17 @@ export default function SignupPage() {
       return;
     }
     setError("");
-    setUserId(1);
+    const cleanName = name.trim();
+    try {
+      const newUser = await api<User>("/users", {
+        method: "POST",
+        body: JSON.stringify({ name: cleanName }),
+      });
+      setUserId(newUser.id);
+      localStorage.setItem("duolingo_username", newUser.name);
+    } catch {
+      localStorage.setItem("duolingo_username", cleanName);
+    }
     router.push("/onboarding");
   }
 

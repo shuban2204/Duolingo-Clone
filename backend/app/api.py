@@ -23,7 +23,7 @@ from .domain import (
     serialize_attempt,
     serialize_exercise,
 )
-from .schemas import AnswerSubmit, AttemptCreate, ShopPurchase, UserUpdate
+from .schemas import AnswerSubmit, AttemptCreate, ShopPurchase, UserCreate, UserUpdate
 
 router = APIRouter(prefix="/api/v1")
 DB = Annotated[Session, Depends(get_db)]
@@ -58,6 +58,26 @@ def user_json(db: Session, user: m.User) -> dict[str, Any]:
                 ((aware(user.hearts_updated_at) + timedelta(hours=4)) - m.utcnow()).total_seconds()
             ),
         )
+    completed_lessons = (
+        db.scalar(
+            select(func.count(func.distinct(m.LessonAttempt.lesson_id))).where(
+                m.LessonAttempt.user_id == user.id,
+                m.LessonAttempt.status == m.AttemptStatus.COMPLETED,
+            )
+        )
+        or 0
+    )
+    # Check if manually simulated via app_meta
+    override_unlocked = db.get(m.AppMeta, f"leaderboard-unlocked:{user.id}")
+    leaderboard_unlocked = (
+        True
+        if override_unlocked and override_unlocked.value == "true"
+        else False
+        if override_unlocked and override_unlocked.value == "false"
+        else completed_lessons >= 10
+    )
+    lessons_remaining = 0 if leaderboard_unlocked else max(0, 10 - completed_lessons)
+
     return {
         "id": user.id,
         "name": user.name,
@@ -78,6 +98,9 @@ def user_json(db: Session, user: m.User) -> dict[str, Any]:
         "sound_enabled": user.sound_enabled,
         "course_score": user_course.course_score if user_course else 0,
         "quests_completed": sum(q.progress >= q.target for q in quests),
+        "completed_lessons": completed_lessons,
+        "leaderboard_unlocked": leaderboard_unlocked,
+        "lessons_to_unlock_leaderboard": lessons_remaining,
     }
 
 
@@ -87,6 +110,33 @@ def list_users(db: DB) -> list[dict[str, Any]]:
         {"id": user.id, "name": user.name, "avatar": user.avatar, "total_xp": user.total_xp}
         for user in db.scalars(select(m.User).order_by(m.User.id))
     ]
+
+
+@router.post("/users", status_code=201)
+def create_user(body: UserCreate, db: DB) -> dict[str, Any]:
+    name = body.name.strip()
+    existing = db.scalar(select(m.User).where(func.lower(m.User.name) == name.lower()))
+    if existing:
+        return user_json(db, existing)
+    user = m.User(
+        name=name,
+        avatar=body.avatar,
+        theme=body.theme,
+        total_xp=0,
+        hearts=MAX_HEARTS,
+        gems=500,
+        current_streak=0,
+        longest_streak=0,
+    )
+    db.add(user)
+    db.flush()
+    db.add(m.UserCourse(user_id=user.id, course_id=1, course_score=0))
+    all_skills = list(db.scalars(select(m.Skill).order_by(m.Skill.id)))
+    for index, skill in enumerate(all_skills):
+        state = m.ProgressState.AVAILABLE if index == 0 else m.ProgressState.LOCKED
+        db.add(m.UserSkillProgress(user_id=user.id, skill_id=skill.id, state=state, crowns=0))
+    db.commit()
+    return user_json(db, user)
 
 
 @router.get("/users/{user_id}")
@@ -586,6 +636,8 @@ def claim_quest(quest_id: int, db: DB, user_id: UserID) -> dict[str, Any]:
 
 @router.get("/leaderboard")
 def leaderboard(db: DB, user_id: UserID) -> dict[str, Any]:
+    user = require_user(db, user_id)
+    u_data = user_json(db, user)
     now = m.utcnow()
     week_start = (now - timedelta(days=now.weekday())).replace(
         hour=0, minute=0, second=0, microsecond=0
@@ -600,23 +652,26 @@ def leaderboard(db: DB, user_id: UserID) -> dict[str, Any]:
         .order_by(func.coalesce(func.sum(m.XPTransaction.amount), 0).desc())
     ).all()
     return {
-        "league": "Gold",
+        "league": "Bronze",
         "week_start": week_start,
+        "completed_lessons": u_data["completed_lessons"],
+        "leaderboard_unlocked": u_data["leaderboard_unlocked"],
+        "lessons_to_unlock_leaderboard": u_data["lessons_to_unlock_leaderboard"],
         "entries": [
             {
                 "rank": index + 1,
-                "id": user.id,
-                "name": user.name,
-                "avatar": user.avatar,
+                "id": u.id,
+                "name": u.name,
+                "avatar": u.avatar,
                 "xp": xp,
-                "is_current": user.id == user_id,
+                "is_current": u.id == user_id,
                 "zone": "promotion"
-                if index < 3
+                if index < 7
                 else "relegation"
                 if index >= len(rows) - 2
                 else "safe",
             }
-            for index, (user, xp) in enumerate(rows)
+            for index, (u, xp) in enumerate(rows)
         ],
     }
 
@@ -697,5 +752,21 @@ def restore_seed(user_id: int, db: DB) -> dict[str, Any]:
     )
     if user_course:
         user_course.course_score = 0
+    db.commit()
+    return user_json(db, user)
+
+
+@router.post("/dev/users/{user_id}/toggle-leaderboard")
+def toggle_leaderboard(user_id: int, db: DB) -> dict[str, Any]:
+    if not settings.enable_demo_tools:
+        raise domain_error(404, "not_found", "Not found.")
+    user = require_user(db, user_id)
+    override = db.get(m.AppMeta, f"leaderboard-unlocked:{user.id}")
+    u_data = user_json(db, user)
+    new_state = "false" if u_data["leaderboard_unlocked"] else "true"
+    if override:
+        override.value = new_state
+    else:
+        db.add(m.AppMeta(key=f"leaderboard-unlocked:{user.id}", value=new_state))
     db.commit()
     return user_json(db, user)

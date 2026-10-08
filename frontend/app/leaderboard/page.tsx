@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { api, getUserId } from "@/lib/api";
 import type { User } from "@/lib/types";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Sparkles } from "lucide-react";
 import { AvatarSVG, DEFAULT_CONFIG, type AvatarConfig } from "../profile/avatar/page";
 
@@ -26,7 +27,6 @@ function BronzeShieldSVG() {
           <stop offset="100%" stopColor="#ffffff" stopOpacity="0.05" />
         </linearGradient>
       </defs>
-      {/* Base Shield */}
       <path
         d="M 32 3 L 58 10 C 58 42 48 62 32 71 C 16 62 6 42 6 10 Z"
         fill="url(#bronzeGrad)"
@@ -34,7 +34,6 @@ function BronzeShieldSVG() {
         strokeWidth="3.2"
         strokeLinejoin="round"
       />
-      {/* Inner Rim */}
       <path
         d="M 32 8 L 53 14 C 53 39 44 57 32 65 C 20 57 11 39 11 14 Z"
         fill="none"
@@ -42,12 +41,10 @@ function BronzeShieldSVG() {
         strokeWidth="2"
         opacity="0.75"
       />
-      {/* Left Specular Facet */}
       <path
         d="M 32 8 L 13 14 C 13 39 21 57 32 65 Z"
         fill="url(#bronzeFacet)"
       />
-      {/* Center Bronze Emblem */}
       <circle cx="32" cy="36" r="13" fill="#8f4a1a" opacity="0.4" />
       <path
         d="M 32 27 L 35 33 L 42 34 L 37 39 L 38 46 L 32 42 L 26 46 L 27 39 L 22 34 L 29 33 Z"
@@ -109,7 +106,6 @@ function LockedShieldSVG({
         strokeWidth="2"
         opacity="0.6"
       />
-      {/* Lock Shackle & Body */}
       <g transform="translate(23, 27)">
         <rect x="2" y="7" width="14" height="12" rx="3" fill="#ffffff" opacity="0.95" />
         <path
@@ -141,10 +137,8 @@ function RankMedalSVG({ rank }: { rank: 1 | 2 | 3 }) {
             <stop offset="100%" stopColor="#e5a500" />
           </linearGradient>
         </defs>
-        {/* Ribbon tails */}
         <path d="M 12 18 L 7 34 L 14 30 L 17 34 L 16 22 Z" fill="#ff4b4b" />
         <path d="M 24 18 L 29 34 L 22 30 L 19 34 L 20 22 Z" fill="#d33131" />
-        {/* Medal Coin */}
         <circle cx="18" cy="15" r="12" fill="url(#goldMedal)" stroke="#e5a500" strokeWidth="2" />
         <circle cx="18" cy="15" r="9.5" fill="none" stroke="#fff" strokeWidth="1.2" opacity="0.6" />
         <text
@@ -218,21 +212,8 @@ function RankMedalSVG({ rank }: { rank: 1 | 2 | 3 }) {
 }
 
 // ==========================================
-// Colorful Illustrated Avatars with Flags
+// Cross-Platform SVG Mini Flags
 // ==========================================
-
-const AVATAR_PALETTES = [
-  { bg: "#ffd280", hair: "#5c3317", skin: "#ffb89d", flag: "🇪🇸" },
-  { bg: "#cbe5ff", hair: "#312e81", skin: "#e59d65", flag: "🇫🇷" },
-  { bg: "#ffd8f0", hair: "#e6b843", skin: "#ffcba3", flag: "🇩🇪" },
-  { bg: "#d9f99d", hair: "#1f2427", skin: "#97513f", flag: "🇲🇽" },
-  { bg: "#fed7aa", hair: "#7d4223", skin: "#b76e45", flag: "🇬🇧" },
-  { bg: "#e9d5ff", hair: "#c95026", skin: "#ffc6b7", flag: "🇧🇷" },
-  { bg: "#ccfbf1", hair: "#0f172a", skin: "#a46648", flag: "🇯🇵" },
-  { bg: "#fef08a", hair: "#4a2d1e", skin: "#ffe2d6", flag: "🇮🇹" },
-  { bg: "#fbcfe8", hair: "#7c2d12", skin: "#6e3d3a", flag: "🇨🇦" },
-  { bg: "#bae6fd", hair: "#1e293b", skin: "#f2a07d", flag: "🇺🇸" },
-];
 
 function MiniFlagSVG({ flag }: { flag: string }) {
   if (flag === "🇫🇷") {
@@ -271,6 +252,23 @@ function MiniFlagSVG({ flag }: { flag: string }) {
   );
 }
 
+// ==========================================
+// Colorful Illustrated Avatars
+// ==========================================
+
+const AVATAR_PALETTES = [
+  { bg: "#ffd280", hair: "#5c3317", skin: "#ffb89d", flag: "🇪🇸" },
+  { bg: "#cbe5ff", hair: "#312e81", skin: "#e59d65", flag: "🇫🇷" },
+  { bg: "#ffd8f0", hair: "#e6b843", skin: "#ffcba3", flag: "🇩🇪" },
+  { bg: "#d9f99d", hair: "#1f2427", skin: "#97513f", flag: "🇲🇽" },
+  { bg: "#fed7aa", hair: "#7d4223", skin: "#b76e45", flag: "🇬🇧" },
+  { bg: "#e9d5ff", hair: "#c95026", skin: "#ffc6b7", flag: "🇧🇷" },
+  { bg: "#ccfbf1", hair: "#0f172a", skin: "#a46648", flag: "🇯🇵" },
+  { bg: "#fef08a", hair: "#4a2d1e", skin: "#ffe2d6", flag: "🇮🇹" },
+  { bg: "#fbcfe8", hair: "#7c2d12", skin: "#6e3d3a", flag: "🇨🇦" },
+  { bg: "#bae6fd", hair: "#1e293b", skin: "#f2a07d", flag: "🇺🇸" },
+];
+
 function CompanionAvatar({
   index,
   name,
@@ -283,11 +281,8 @@ function CompanionAvatar({
   return (
     <div className="leaderboard-avatar-circle" style={{ backgroundColor: p.bg }}>
       <svg viewBox="0 0 44 44" width="44" height="44">
-        {/* Shoulders */}
         <ellipse cx="22" cy="46" rx="16" ry="10" fill="#3b82f6" opacity="0.8" />
-        {/* Head */}
         <circle cx="22" cy="22" r="12" fill={p.skin} />
-        {/* Hair */}
         <path
           d={
             index % 3 === 0
@@ -298,10 +293,8 @@ function CompanionAvatar({
           }
           fill={p.hair}
         />
-        {/* Eyes */}
         <circle cx="18" cy="22" r="1.6" fill="#1f2937" />
         <circle cx="26" cy="22" r="1.6" fill="#1f2937" />
-        {/* Smile */}
         <path
           d="M 19 26 Q 22 29 25 26"
           fill="none"
@@ -356,11 +349,15 @@ function LeaderboardRail({
   currentRank,
   userConfig,
   targetXpGap,
+  isLocked,
+  remainingLessons,
 }: {
   currentUser?: User;
   currentRank: number;
   userConfig: AvatarConfig;
   targetXpGap: number;
+  isLocked: boolean;
+  remainingLessons: number;
 }) {
   return (
     <aside className="right-rail">
@@ -385,7 +382,9 @@ function LeaderboardRail({
         </div>
 
         <h3 className="lb-user-name">{currentUser?.name ?? "Learner"}</h3>
-        <p className="lb-user-rank-label">Rank: {currentRank}</p>
+        <p className="lb-user-rank-label">
+          {isLocked ? "Unranked (Locked)" : `Rank: ${currentRank}`}
+        </p>
 
         <div className="lb-quick-stats">
           <div className="lb-stat-chip">
@@ -403,23 +402,40 @@ function LeaderboardRail({
         </div>
 
         <div className="lb-progress-note">
-          <p>
-            {targetXpGap > 0
-              ? `You need ${targetXpGap} XP to reach Rank ${Math.max(1, currentRank - 1)}`
-              : "You are currently leading in the promotion zone!"}
-          </p>
-          <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{
-                width: `${Math.min(
-                  100,
-                  Math.max(25, 100 - (targetXpGap / 100) * 50)
-                )}%`,
-                background: "#58cc02",
-              }}
-            />
-          </div>
+          {isLocked ? (
+            <>
+              <p>Complete {remainingLessons} more lesson{remainingLessons === 1 ? "" : "s"} to unlock leagues.</p>
+              <div className="progress-track">
+                <div
+                  className="progress-fill"
+                  style={{
+                    width: `${Math.min(100, ((currentUser?.completed_lessons ?? 0) / 10) * 100)}%`,
+                    background: "#58cc02",
+                  }}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <p>
+                {targetXpGap > 0
+                  ? `You need ${targetXpGap} XP to reach Rank ${Math.max(1, currentRank - 1)}`
+                  : "You are currently leading in the promotion zone!"}
+              </p>
+              <div className="progress-track">
+                <div
+                  className="progress-fill"
+                  style={{
+                    width: `${Math.min(
+                      100,
+                      Math.max(25, 100 - (targetXpGap / 100) * 50)
+                    )}%`,
+                    background: "#58cc02",
+                  }}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -465,6 +481,128 @@ function LeaderboardRail({
 }
 
 // ==========================================
+// Locked Leaderboard Component
+// ==========================================
+
+function LockedLeaderboardView({
+  completed,
+  remaining,
+  onUnlockTest,
+}: {
+  completed: number;
+  remaining: number;
+  onUnlockTest: () => void;
+}) {
+  const router = useRouter();
+  const percentage = Math.min(100, Math.max(0, Math.round((completed / 10) * 100)));
+
+  return (
+    <div className="leaderboard-container lb-locked-container">
+      <div className="lb-locked-hero">
+        <div className="lb-locked-shield-wrap">
+          <div className="lb-locked-shield-glow" />
+          <svg viewBox="0 0 100 115" width="110" height="126" style={{ overflow: "visible" }}>
+            <defs>
+              <linearGradient id="lockedBronzeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#e39a5c" />
+                <stop offset="50%" stopColor="#c57a3e" />
+                <stop offset="100%" stopColor="#874312" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M 50 4 L 92 15 C 92 65 76 96 50 110 C 24 96 8 65 8 15 Z"
+              fill="url(#lockedBronzeGrad)"
+              stroke="#5a2b0c"
+              strokeWidth="4"
+              strokeLinejoin="round"
+            />
+            <g transform="translate(35, 42)">
+              <rect x="3" y="12" width="24" height="20" rx="5" fill="#ffffff" />
+              <path
+                d="M 8 12 V 7 C 8 3 11 0 15 0 C 19 0 22 3 22 7 V 12"
+                fill="none"
+                stroke="#ffffff"
+                strokeWidth="4.5"
+                strokeLinecap="round"
+              />
+              <circle cx="15" cy="20" r="2.8" fill="#c57a3e" />
+            </g>
+          </svg>
+        </div>
+
+        <h1 className="lb-locked-title">Unlock Leaderboards!</h1>
+        <p className="lb-locked-desc">
+          Complete {remaining} more lesson{remaining === 1 ? "" : "s"} to start competing in weekly leagues.
+        </p>
+
+        <div className="lb-locked-progress-card">
+          <div className="lb-locked-progress-header">
+            <span>{completed} / 10 LESSONS COMPLETED</span>
+            <b>{percentage}%</b>
+          </div>
+          <div className="progress-track" style={{ height: 16 }}>
+            <div
+              className="progress-fill"
+              style={{
+                width: `${percentage}%`,
+                background: "#58cc02",
+              }}
+            />
+          </div>
+        </div>
+
+        <button
+          className="raised primary lb-locked-cta-btn"
+          onClick={() => router.push("/learn")}
+        >
+          START A LESSON
+        </button>
+
+        <div className="lb-locked-features-grid">
+          <div className="lb-locked-feature-card">
+            <span className="lb-feature-icon">🏆</span>
+            <div>
+              <b>Climb weekly leagues</b>
+              <p>Compete with 30 learners every week and earn XP to promote from Bronze to Diamond.</p>
+            </div>
+          </div>
+          <div className="lb-locked-feature-card">
+            <span className="lb-feature-icon">⚡</span>
+            <div>
+              <b>Finish in the top 7</b>
+              <p>Top learners in the promotion zone advance to the next league every Sunday.</p>
+            </div>
+          </div>
+          <div className="lb-locked-feature-card">
+            <span className="lb-feature-icon">🔥</span>
+            <div>
+              <b>Keep your streak</b>
+              <p>Daily lessons build your streak, protect your hearts, and boost your league rank.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 24, textAlign: "center" }}>
+          <button
+            className="raised"
+            style={{
+              padding: "9px 18px",
+              fontSize: 13,
+              fontWeight: 900,
+              color: "var(--muted)",
+              background: "var(--surface)",
+            }}
+            onClick={onUnlockTest}
+          >
+            ⚡ Quick Demo: Unlock Leaderboards (Test Mode)
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==========================================
 // Main Leaderboard Page Component
 // ==========================================
 
@@ -480,27 +618,15 @@ type BoardEntry = {
 
 type BoardData = {
   league: string;
+  completed_lessons?: number;
+  leaderboard_unlocked?: boolean;
+  lessons_to_unlock_leaderboard?: number;
   entries: BoardEntry[];
 };
 
-// Realistic Duolingo league competitor roster matching the user's reference screenshot
-const DEFAULT_LEAGUE_ROSTER = [
-  { name: "Sophia Nguyen", xp: 1250 },
-  { name: "Jane Wilson", xp: 1200 },
-  { name: "Oliver Johnson", xp: 1100 },
-  { name: "Mia Rodriguez", xp: 1150 },
-  { name: "Noah Brown", xp: 1050 },
-  { name: "Liam Martinez", xp: 1000 },
-  { name: "Ava Thompson", xp: 700 },
-  { name: "Ethan Anderson", xp: 650 },
-  { name: "James Taylor", xp: 600 },
-  { name: "Eric Johnson", xp: 550 },
-  { name: "Emma Davis", xp: 500 },
-  { name: "Lucas Garcia", xp: 450 },
-];
-
 export default function LeaderboardPage() {
   const currentUserId = getUserId();
+  const queryClient = useQueryClient();
   const [avatarConfig, setAvatarConfig] = useState<AvatarConfig>(DEFAULT_CONFIG);
 
   // Load customizable avatar config from localStorage
@@ -536,45 +662,48 @@ export default function LeaderboardPage() {
     queryFn: () => api<BoardData>("/leaderboard"),
   });
 
+  // Toggle leaderboard unlocked state (for live evaluation & testing)
+  const toggleMutation = useMutation({
+    mutationFn: () => api(`/dev/users/${currentUserId}/toggle-leaderboard`, { method: "POST" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
+    },
+  });
+
+  // Duolingo 10-lesson unlock condition check
+  const completedLessons = user?.completed_lessons ?? (boardData?.completed_lessons ?? 0);
+  const isUnlocked = user?.leaderboard_unlocked ?? (boardData?.leaderboard_unlocked ?? (completedLessons >= 10));
+  const remainingLessons = user?.lessons_to_unlock_leaderboard ?? Math.max(0, 10 - completedLessons);
+
+  // Determine user's real original username
+  const activeLearnerName = useMemo(() => {
+    if (user?.name) return user.name;
+    if (typeof window !== "undefined") {
+      const local = localStorage.getItem("duolingo_username");
+      if (local) return local;
+    }
+    return "Learner";
+  }, [user?.name]);
+
   // Assemble full robust leaderboard list
   const entries = useMemo(() => {
     const apiEntries = boardData?.entries ?? [];
-    const activeLearnerName = user?.name ?? "Learner";
     const activeLearnerXp = user?.daily_xp ?? (apiEntries.find((e) => e.is_current)?.xp || 140);
 
-    // If API provided entries, use them; if fewer than 12, blend in roster names for authentic Duolingo feel
     const list: { id: number; name: string; xp: number; is_current: boolean }[] = [];
 
-    if (apiEntries.length >= 8) {
-      apiEntries.forEach((e) => {
-        list.push({
-          id: e.id,
-          name: e.is_current ? activeLearnerName : e.name,
-          xp: e.is_current ? activeLearnerXp : e.xp,
-          is_current: e.is_current,
-        });
+    apiEntries.forEach((e) => {
+      list.push({
+        id: e.id,
+        // Always show the learner's genuine username when it's their entry
+        name: e.is_current ? activeLearnerName : e.name,
+        xp: e.is_current ? activeLearnerXp : e.xp,
+        is_current: e.is_current,
       });
-    } else {
-      // Build clean roster with active learner at rank 5 (matching user's reference image)
-      DEFAULT_LEAGUE_ROSTER.slice(0, 11).forEach((item, idx) => {
-        if (idx === 4) {
-          list.push({
-            id: currentUserId,
-            name: activeLearnerName,
-            xp: 1100,
-            is_current: true,
-          });
-        }
-        list.push({
-          id: 100 + idx,
-          name: item.name,
-          xp: item.xp,
-          is_current: false,
-        });
-      });
-    }
+    });
 
-    // Ensure active learner is in the list
+    // Ensure active learner is included
     if (!list.some((e) => e.is_current)) {
       list.push({
         id: currentUserId,
@@ -592,7 +721,7 @@ export default function LeaderboardPage() {
       ...entry,
       rank: idx + 1,
     }));
-  }, [boardData, user, currentUserId]);
+  }, [boardData, user, currentUserId, activeLearnerName]);
 
   const currentRank = entries.find((e) => e.is_current)?.rank ?? 5;
   const rankAboveEntry = entries.find((e) => e.rank === currentRank - 1);
@@ -609,96 +738,124 @@ export default function LeaderboardPage() {
           currentRank={currentRank}
           userConfig={avatarConfig}
           targetXpGap={targetXpGap}
+          isLocked={!isUnlocked}
+          remainingLessons={remainingLessons}
         />
       }
     >
-      <div className="leaderboard-container">
-        {/* Top Header with Duolingo League Shields */}
-        <header className="leaderboard-header">
-          <div className="league-shields-row">
-            <div className="league-shield-item active" title="Bronze League">
-              <BronzeShieldSVG />
-            </div>
-            <div className="league-shield-item locked" title="Silver League (Locked)">
-              <LockedShieldSVG type="silver" />
-            </div>
-            <div className="league-shield-item locked" title="Gold League (Locked)">
-              <LockedShieldSVG type="gold" />
-            </div>
-            <div className="league-shield-item locked" title="Sapphire League (Locked)">
-              <LockedShieldSVG type="sapphire" />
-            </div>
-          </div>
-
-          <h1 className="leaderboard-title">Bronze League</h1>
-          <p className="leaderboard-subtitle">Top 7 advance to Silver League</p>
-          <p className="leaderboard-countdown">6 days</p>
-
-          <div className="leaderboard-divider" />
-        </header>
-
-        {/* Leaderboard Entries List */}
-        <section className="leaderboard-list" aria-label="League rankings">
-          {entries.map((row, index) => {
-            const isPromotion = row.rank <= 7;
-            const isRank1 = row.rank === 1;
-            const isRank2 = row.rank === 2;
-            const isRank3 = row.rank === 3;
-
-            return (
-              <div key={`${row.id}-${row.rank}`}>
-                <article
-                  className={`leaderboard-row ${row.is_current ? "current-user" : ""}`}
-                >
-                  {/* Rank Column */}
-                  <div className="leaderboard-rank-col">
-                    {isRank1 ? (
-                      <RankMedalSVG rank={1} />
-                    ) : isRank2 ? (
-                      <RankMedalSVG rank={2} />
-                    ) : isRank3 ? (
-                      <RankMedalSVG rank={3} />
-                    ) : (
-                      <span className={`rank-number ${isPromotion ? "promotion" : ""}`}>
-                        {row.rank}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Avatar Column */}
-                  <div className="leaderboard-avatar-col">
-                    {row.is_current ? (
-                      <UserCustomAvatarCircle config={avatarConfig} />
-                    ) : (
-                      <CompanionAvatar index={index} name={row.name} />
-                    )}
-                  </div>
-
-                  {/* Name Column (Guaranteed High Contrast and Legibility) */}
-                  <div className="leaderboard-name-col">
-                    <span className="leaderboard-name">{row.name}</span>
-                    {row.is_current && <span className="current-user-pill">YOU</span>}
-                  </div>
-
-                  {/* XP Column */}
-                  <div className="leaderboard-xp-col">
-                    <span className="leaderboard-xp">{row.xp} XP</span>
-                  </div>
-                </article>
-
-                {/* Promotion Cutoff Divider after Rank 7 */}
-                {row.rank === 7 && index < entries.length - 1 && (
-                  <div className="promotion-zone-divider">
-                    <span className="promotion-line" />
-                    <span className="promotion-tag">PROMOTION ZONE</span>
-                    <span className="promotion-line" />
-                  </div>
-                )}
+      {!isUnlocked ? (
+        <LockedLeaderboardView
+          completed={completedLessons}
+          remaining={remainingLessons}
+          onUnlockTest={() => toggleMutation.mutate()}
+        />
+      ) : (
+        <div className="leaderboard-container">
+          {/* Top Header with Duolingo League Shields */}
+          <header className="leaderboard-header">
+            <div className="league-shields-row">
+              <div className="league-shield-item active" title="Bronze League">
+                <BronzeShieldSVG />
               </div>
-            );
-          })}
-        </section>
-      </div>
+              <div className="league-shield-item locked" title="Silver League (Locked)">
+                <LockedShieldSVG type="silver" />
+              </div>
+              <div className="league-shield-item locked" title="Gold League (Locked)">
+                <LockedShieldSVG type="gold" />
+              </div>
+              <div className="league-shield-item locked" title="Sapphire League (Locked)">
+                <LockedShieldSVG type="sapphire" />
+              </div>
+            </div>
+
+            <h1 className="leaderboard-title">Bronze League</h1>
+            <p className="leaderboard-subtitle">Top 7 advance to Silver League</p>
+            <p className="leaderboard-countdown">6 days</p>
+
+            <div className="leaderboard-divider" />
+          </header>
+
+          {/* Leaderboard Entries List */}
+          <section className="leaderboard-list" aria-label="League rankings">
+            {entries.map((row, index) => {
+              const isPromotion = row.rank <= 7;
+              const isRank1 = row.rank === 1;
+              const isRank2 = row.rank === 2;
+              const isRank3 = row.rank === 3;
+
+              return (
+                <div key={`${row.id}-${row.rank}`}>
+                  <article
+                    className={`leaderboard-row ${row.is_current ? "current-user" : ""}`}
+                  >
+                    {/* Rank Column */}
+                    <div className="leaderboard-rank-col">
+                      {isRank1 ? (
+                        <RankMedalSVG rank={1} />
+                      ) : isRank2 ? (
+                        <RankMedalSVG rank={2} />
+                      ) : isRank3 ? (
+                        <RankMedalSVG rank={3} />
+                      ) : (
+                        <span className={`rank-number ${isPromotion ? "promotion" : ""}`}>
+                          {row.rank}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Avatar Column */}
+                    <div className="leaderboard-avatar-col">
+                      {row.is_current ? (
+                        <UserCustomAvatarCircle config={avatarConfig} />
+                      ) : (
+                        <CompanionAvatar index={index} name={row.name} />
+                      )}
+                    </div>
+
+                    {/* Name Column (Guaranteed High Contrast and Legibility) */}
+                    <div className="leaderboard-name-col">
+                      <span className="leaderboard-name">{row.name}</span>
+                      {row.is_current && <span className="current-user-pill">YOU</span>}
+                    </div>
+
+                    {/* XP Column */}
+                    <div className="leaderboard-xp-col">
+                      <span className="leaderboard-xp">{row.xp} XP</span>
+                    </div>
+                  </article>
+
+                  {/* Promotion Cutoff Divider after Rank 7 */}
+                  {row.rank === 7 && index < entries.length - 1 && (
+                    <div className="promotion-zone-divider">
+                      <span className="promotion-line" />
+                      <span className="promotion-tag">PROMOTION ZONE</span>
+                      <span className="promotion-line" />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </section>
+
+          {/* Subtle Dev Testing Affordance */}
+          <div style={{ marginTop: 24, textAlign: "center" }}>
+            <button
+              className="raised"
+              style={{
+                padding: "8px 14px",
+                fontSize: 12,
+                fontWeight: 900,
+                color: "var(--muted)",
+                background: "transparent",
+                border: "1px solid var(--line)",
+              }}
+              onClick={() => toggleMutation.mutate()}
+            >
+              🔒 Test Mode: Lock Leaderboards (0/10 Lessons)
+            </button>
+          </div>
+        </div>
+      )}
     </AppShell>
   );
 }
