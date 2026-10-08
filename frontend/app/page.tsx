@@ -1,45 +1,91 @@
 "use client";
 
 import { Duo } from "@/components/duo";
-import { api, setUserId } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { setUserId } from "@/lib/api";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-type DemoUser = { id: number; name: string; avatar: string; total_xp: number };
+const siteLanguages = [
+  ["🇸🇦", "العربية"], ["🇮🇳", "বাংলা"], ["🇨🇿", "Čeština"], ["🇩🇪", "Deutsch"],
+  ["🇬🇷", "Ελληνικά"], ["🇺🇸", "English"], ["🇪🇸", "Español"], ["🇫🇷", "Français"],
+  ["🇮🇳", "हिन्दी"], ["🇭🇺", "Magyar"], ["🇮🇩", "Bahasa Indonesia"], ["🇮🇹", "Italiano"],
+  ["🇯🇵", "日本語"], ["🇮🇳", "ಕನ್ನಡ"], ["🇰🇷", "한국어"], ["🇮🇳", "मराठी"],
+  ["🇳🇱", "Nederlands"], ["🇮🇳", "ਪੰਜਾਬੀ"], ["🇵🇱", "Polski"], ["🇧🇷", "Português"],
+  ["🇷🇴", "Română"], ["🇷🇺", "Русский"], ["🇸🇪", "Svenska"], ["🇮🇳", "தமிழ்"],
+  ["🇮🇳", "తెలుగు"], ["🇹🇭", "ภาษาไทย"], ["🇵🇭", "Tagalog"], ["🇹🇷", "Türkçe"],
+  ["🇺🇦", "Українська"], ["🇵🇰", "اُردُو"], ["🇻🇳", "Tiếng Việt"], ["🇨🇳", "中文"],
+] as const;
+
+const courses = [
+  ["", "English"], ["♜", "Chess"], ["÷×", "Math"], ["", "Spanish"],
+  ["", "French"], ["", "German"], ["", "Italian"], ["", "Portuguese"],
+] as const;
+
+function HeroCast() {
+  return (
+    <div className="landing-cast" aria-label="A group of learners having fun with Duo" role="img">
+      <span className="cast-path" aria-hidden="true"><i /><i /><i /><i /></span>
+      <span className="cast-friend cast-one" aria-hidden="true">🧕</span>
+      <span className="cast-friend cast-two" aria-hidden="true">🤸</span>
+      <span className="cast-friend cast-three" aria-hidden="true">🧑🏽</span>
+      <span className="cast-friend cast-four" aria-hidden="true">🧙🏻‍♀️</span>
+      <span className="cast-friend cast-five" aria-hidden="true">🧔🏽</span>
+      <span className="cast-duo"><Duo size={205} state="encourage" /></span>
+    </div>
+  );
+}
 
 export default function Landing() {
   const router = useRouter();
-  const { data: users = [] } = useQuery({ queryKey: ["users"], queryFn: () => api<DemoUser[]>("/users") });
-  const start = (id: number) => { setUserId(id); router.push("/learn"); };
+  const startDemo = () => {
+    setUserId(1);
+    router.push("/learn");
+  };
 
   return (
     <main className="landing">
       <header className="landing-header">
         <Link className="landing-brand" href="/" aria-label="Duolingo home">
-          <Duo size={44} />
+          <Duo size={39} />
           <span>duolingo</span>
         </Link>
-        <Link className="raised landing-login" href="/login">LOG IN</Link>
-      </header>
-      <section className="hero">
-        <div className="hero-art"><Duo size={250} /></div>
-        <div className="hero-copy">
-          <h1>The free, fun, and effective way to learn a language!</h1>
-          <div className="landing-actions">
-            <Link className="raised primary" href="/signup">Get started</Link>
-            <Link className="raised landing-secondary" href="/login">I already have an account</Link>
-          </div>
-          <div id="learners" className="user-picker">
-            {users.slice(0, 8).map((user) => (
-              <button aria-label={`Continue as ${user.name}`} className="raised user-chip" key={user.id} onClick={() => start(user.id)}>
-                <b>{user.name}</b><br /><small className="muted">{user.total_xp} XP</small>
-              </button>
+        <details className="language-menu">
+          <summary>SITE LANGUAGE: ENGLISH <ChevronDown size={18} aria-hidden="true" /></summary>
+          <div className="language-panel">
+            {siteLanguages.map(([flag, language]) => (
+              <button key={language} type="button"><span aria-hidden="true">{flag}</span>{language}</button>
             ))}
+          </div>
+        </details>
+      </header>
+
+      <section className="hero">
+        <div className="hero-art"><HeroCast /></div>
+        <div className="hero-copy">
+          <h1>The most fun way to learn<br className="desktop-break" /> languages, chess, and more!</h1>
+          <div className="landing-actions">
+            <Link className="raised primary" href="/signup">GET STARTED</Link>
+            <Link className="raised landing-secondary" href="/login">I ALREADY HAVE AN ACCOUNT</Link>
           </div>
         </div>
       </section>
-      <footer className="disclaimer">Unofficial educational clone built for a full-stack engineering assignment.</footer>
+
+      <nav className="course-carousel" aria-label="Available subjects">
+        <button className="course-arrow" type="button" aria-label="Previous subjects"><ChevronLeft /></button>
+        <div className="course-list">
+          {courses.map(([icon, label]) => label === "Spanish" ? (
+            <button key={label} className="course-item" type="button" onClick={startDemo} aria-label="Continue as Aarav">
+              <span className={`course-badge course-badge-${label.toLowerCase()}`} aria-hidden="true">{icon}</span>{label}
+            </button>
+          ) : (
+            <Link key={label} className="course-item" href="/onboarding">
+              <span className={`course-badge course-badge-${label.toLowerCase()}`} aria-hidden="true">{icon}</span>{label}
+            </Link>
+          ))}
+        </div>
+        <button className="course-arrow" type="button" aria-label="Next subjects"><ChevronRight /></button>
+      </nav>
     </main>
   );
 }
