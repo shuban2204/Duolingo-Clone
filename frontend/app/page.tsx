@@ -3,6 +3,7 @@
 import { Duo } from "@/components/duo";
 import { setUserId } from "@/lib/api";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -24,14 +25,15 @@ const courses = [
 
 function HeroCast() {
   return (
-    <div className="landing-cast" aria-label="A group of learners having fun with Duo" role="img">
-      <span className="cast-path" aria-hidden="true"><i /><i /><i /><i /></span>
-      <span className="cast-friend cast-one" aria-hidden="true">🧕</span>
-      <span className="cast-friend cast-two" aria-hidden="true">🤸</span>
-      <span className="cast-friend cast-three" aria-hidden="true">🧑🏽</span>
-      <span className="cast-friend cast-four" aria-hidden="true">🧙🏻‍♀️</span>
-      <span className="cast-friend cast-five" aria-hidden="true">🧔🏽</span>
-      <span className="cast-duo"><Duo size={205} state="encourage" /></span>
+    <div className="landing-cast">
+      <Image
+        className="landing-cast-image"
+        src="/hero-cast.png"
+        alt="Duo and Duolingo characters flying together"
+        width={848}
+        height={848}
+        priority
+      />
     </div>
   );
 }
