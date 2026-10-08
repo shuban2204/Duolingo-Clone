@@ -248,11 +248,12 @@ a { color:inherit; text-decoration:none; }
 .lesson-path .lesson-node-wrap:not(.kind-duo):not(.kind-chest) .node-pedestal.current .path-node{width:84px;height:84px;border-bottom-width:8px}
 .lesson-path .lesson-node-wrap:not(.kind-duo):not(.kind-chest) .node-pedestal.completed:not(.current){width:82px;height:82px;padding:7px}
 .lesson-path .lesson-node-wrap:not(.kind-duo):not(.kind-chest) .node-pedestal.completed:not(.current) .path-node{width:68px;height:64px}
-.lesson-path .node-pedestal:not(.jump){transform:none}
+.lesson-path .node-pedestal:not(.jump){transform:rotate(var(--node-tilt,0deg))}
 .lesson-path .lesson-node-wrap:not(.kind-duo):not(.kind-chest) .path-node{border-radius:50%}
 .lesson-path .lesson-node-wrap.kind-chest{top:12px}
-.lesson-path .node-pedestal:has(.path-node:not(:disabled)):hover{transform:translateY(-4px)}
-.lesson-path .node-pedestal:has(.path-node:not(:disabled)):active{transform:translateY(5px)}
+.lesson-path .lesson-node-wrap.kind-chest .path-chest{transform:rotate(-3deg)}
+.lesson-path .node-pedestal:has(.path-node:not(:disabled)):hover{transform:translateY(-4px) rotate(var(--node-tilt,0deg))}
+.lesson-path .node-pedestal:has(.path-node:not(:disabled)):active{transform:translateY(5px) rotate(var(--node-tilt,0deg))}
 .lesson-path .lesson-node-wrap.node-details-open{z-index:35}
 .node-info-card{position:absolute;top:calc(50% + 52px);left:50%;z-index:40;width:332px;margin-left:-116px;padding:18px;border:2px solid #3a5059;border-radius:16px;background:#20333b;color:#607984;box-shadow:0 8px 0 #0d1c22;text-align:left}
 .node-info-card:before{content:"";position:absolute;top:-9px;left:107px;width:16px;height:16px;background:#20333b;border-left:2px solid #3a5059;border-top:2px solid #3a5059;transform:rotate(45deg)}
