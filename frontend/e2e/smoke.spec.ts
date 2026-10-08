@@ -114,6 +114,13 @@ test("learning path shows progress callouts and animated section mascots", async
   await expect(chest.locator("i")).toHaveCount(1);
   await expect(chest.locator("b")).toHaveCount(1);
 
+  const activeRing = await page.locator(".node-pedestal.current").first().boundingBox();
+  const lockedRing = await page.locator(".node-pedestal.locked").first().boundingBox();
+  expect(activeRing?.width).toBe(108);
+  expect(activeRing?.height).toBe(108);
+  expect(lockedRing?.width).toBe(78);
+  expect(lockedRing?.height).toBe(78);
+
   const currentNode = page.locator(".node-pedestal.current .path-node").first();
   await currentNode.hover();
   const raisedTransform = await currentNode.evaluate((element) => getComputedStyle(element).transform);

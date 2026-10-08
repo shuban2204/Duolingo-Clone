@@ -226,7 +226,7 @@ a { color:inherit; text-decoration:none; }
   height:88px;
   align-self:center;
 }
-.lesson-path .lesson-node-wrap:nth-child(1){grid-row:1}
+.lesson-path .lesson-node-wrap:nth-child(1){grid-row:1;top:-20px}
 .lesson-path .lesson-node-wrap:nth-child(2){grid-row:2}
 .lesson-path .lesson-node-wrap:nth-child(3){grid-row:3}
 .lesson-path .lesson-node-wrap:nth-child(4){grid-row:3;z-index:2}
@@ -240,8 +240,13 @@ a { color:inherit; text-decoration:none; }
 .lesson-path .path-duo{width:140px;height:150px}
 .lesson-path .path-lily{width:108px;height:140px}
 .lesson-path .path-oscar{width:130px;height:134px}
-.lesson-path .node-pedestal:not(.current):not(.jump){width:82px;height:82px;padding:7px}
-.lesson-path .node-pedestal:not(.current):not(.jump) .path-node{width:68px;height:64px}
+.lesson-path .lesson-node-wrap:not(.kind-duo):not(.kind-chest) .node-pedestal.locked{width:78px;height:78px;padding:0;background:#43565f;box-shadow:0 8px 0 #2d414a}
+.lesson-path .lesson-node-wrap:not(.kind-duo):not(.kind-chest) .node-pedestal.locked .path-node{width:78px;height:78px;background:transparent;border:0;box-shadow:inset 0 3px 0 #ffffff0a}
+.lesson-path .lesson-node-wrap:not(.kind-duo):not(.kind-chest) .node-pedestal.current{width:108px;height:108px;padding:12px;background:#34454d;box-shadow:0 8px 0 #26373f}
+.lesson-path .lesson-node-wrap:not(.kind-duo):not(.kind-chest) .node-pedestal.current:after{display:none}
+.lesson-path .lesson-node-wrap:not(.kind-duo):not(.kind-chest) .node-pedestal.current .path-node{width:84px;height:84px;border-bottom-width:8px}
+.lesson-path .lesson-node-wrap:not(.kind-duo):not(.kind-chest) .node-pedestal.completed:not(.current){width:82px;height:82px;padding:7px}
+.lesson-path .lesson-node-wrap:not(.kind-duo):not(.kind-chest) .node-pedestal.completed:not(.current) .path-node{width:68px;height:64px}
 .lesson-path .node-pedestal:not(.jump){transform:none}
 .lesson-path .lesson-node-wrap:not(.kind-duo):not(.kind-chest) .path-node{border-radius:50%}
 .lesson-path .lesson-node-wrap.kind-chest{top:12px}
