@@ -1517,139 +1517,130 @@ a { color:inherit; text-decoration:none; }
 }
 
 /* ========================================================
-   Locked Leaderboard View Styles
+/* ========================================================
+   Duolingo Locked Leaderboard Exact View Styles
    ======================================================== */
 
-.lb-locked-container {
+.lb-locked-duo-container {
   max-width: 580px;
   margin: 0 auto;
-  padding: 20px 16px 60px;
-}
-
-.lb-locked-hero {
+  padding: 30px 16px 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
 
-.lb-locked-shield-wrap {
+.lb-three-shields-wrap {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
-.lb-locked-shield-glow {
-  position: absolute;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(201, 128, 62, 0.35) 0%, transparent 70%);
-  filter: blur(14px);
-  pointer-events: none;
-}
-
-.lb-locked-title {
-  font-size: 32px;
-  font-weight: 1000;
+.lb-locked-hero-title {
+  font-size: 26px;
+  font-weight: 800;
   color: var(--ink);
   margin: 0 0 10px;
-  letter-spacing: -0.6px;
+  letter-spacing: -0.3px;
 }
 
-.lb-locked-desc {
-  font-size: 17px;
-  font-weight: 700;
+.lb-locked-hero-subtitle {
+  font-size: 16px;
+  font-weight: 600;
   color: var(--muted);
   margin: 0 0 24px;
-  max-width: 420px;
-  line-height: 1.45;
 }
 
-.lb-locked-progress-card {
-  width: 100%;
-  max-width: 460px;
+.lb-duo-start-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  padding: 0 34px;
+  border-radius: 9999px;
   background: var(--surface);
-  border: 2px solid var(--line);
-  border-radius: 18px;
-  padding: 18px 22px;
-  margin-bottom: 22px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  border: 2px solid #37464f;
+  color: #1cb0f6;
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 0 #23343d;
 }
 
-.lb-locked-progress-header {
+.lb-duo-start-btn:hover {
+  background: #182730;
+  border-color: #52656d;
+  color: #49c0f8;
+  transform: translateY(-1px);
+}
+
+.lb-duo-start-btn:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+.lb-skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 440px;
+  margin: 44px auto 0;
+}
+
+.lb-skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.lb-skeleton-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #41525c;
+  flex-shrink: 0;
+}
+
+.lb-skeleton-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #41525c;
+  flex-shrink: 0;
+}
+
+.lb-skeleton-name {
+  height: 14px;
+  border-radius: 9999px;
+  background: #41525c;
+  flex-shrink: 0;
+}
+
+.lb-skeleton-xp {
+  height: 14px;
+  width: 48px;
+  border-radius: 9999px;
+  background: #41525c;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Locked Right Rail Card */
+.lb-locked-rail-card {
+  border: 2px solid #2e3d45;
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 13px;
-  font-weight: 900;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-  margin-bottom: 12px;
-}
-
-.lb-locked-progress-header b {
-  color: #58cc02;
-  font-size: 15px;
-}
-
-.lb-locked-cta-btn {
-  width: 100%;
-  max-width: 460px;
-  padding: 16px;
-  font-size: 16px;
-  font-weight: 1000;
-  letter-spacing: 0.06em;
-  border-radius: 18px;
-  margin-bottom: 34px;
-}
-
-.lb-locked-features-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  width: 100%;
-  max-width: 460px;
-  text-align: left;
-}
-
-.lb-locked-feature-card {
-  display: flex;
-  align-items: flex-start;
   gap: 16px;
-  background: var(--surface);
-  border: 2px solid var(--line);
-  border-radius: 18px;
-  padding: 16px 18px;
-  transition: transform 0.12s ease;
-}
-
-.lb-locked-feature-card:hover {
-  transform: translateY(-2px);
-  border-color: #84d8ff;
-}
-
-.lb-feature-icon {
-  font-size: 30px;
-  line-height: 1;
-  flex-shrink: 0;
-  padding-top: 2px;
-}
-
-.lb-locked-feature-card b {
-  display: block;
-  font-size: 16px;
-  font-weight: 900;
-  color: var(--ink);
-  margin-bottom: 4px;
-}
-
-.lb-locked-feature-card p {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--muted);
-  margin: 0;
-  line-height: 1.4;
 }

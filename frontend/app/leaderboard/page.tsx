@@ -344,13 +344,199 @@ function UserCustomAvatarCircle({
 // Right Rail for Leaderboard
 // ==========================================
 
+// ==========================================
+// Duo Workout & Three Shields SVGs
+// ==========================================
+
+function DuoWorkoutSVG() {
+  return (
+    <svg viewBox="0 0 100 100" width="84" height="84" style={{ overflow: "visible" }}>
+      {/* Dumbbell left plate */}
+      <g transform="translate(10, 48)">
+        <ellipse cx="6" cy="18" rx="6" ry="14" fill="#64748b" stroke="#334155" strokeWidth="2" />
+        <ellipse cx="6" cy="18" rx="3.5" ry="9" fill="#94a3b8" />
+        <rect x="6" y="15" width="22" height="6" rx="2" fill="#cbd5e1" stroke="#475569" strokeWidth="1.5" />
+        <ellipse cx="26" cy="18" rx="5" ry="12" fill="#64748b" stroke="#334155" strokeWidth="2" />
+      </g>
+
+      {/* Duo Body */}
+      <ellipse cx="58" cy="56" rx="30" ry="32" fill="#58cc02" />
+      <ellipse cx="58" cy="62" rx="22" ry="22" fill="#78d826" />
+
+      {/* Wings */}
+      <path
+        d="M 32 50 C 22 46, 18 58, 28 66 C 34 70, 40 64, 38 56 Z"
+        fill="#46a302"
+      />
+      <path
+        d="M 84 52 C 92 56, 90 68, 80 72 C 74 74, 72 66, 76 58 Z"
+        fill="#46a302"
+      />
+
+      {/* Sweatband on Duo's head */}
+      <g transform="rotate(-6, 58, 32)">
+        <rect x="30" y="26" width="56" height="11" rx="4" fill="#e11d48" stroke="#be123c" strokeWidth="1.5" />
+        <rect x="32" y="29.5" width="52" height="4" fill="#ffffff" rx="1.5" />
+      </g>
+
+      {/* Eyes */}
+      <ellipse cx="46" cy="42" rx="10" ry="10" fill="#ffffff" />
+      <ellipse cx="70" cy="42" rx="10" ry="10" fill="#ffffff" />
+      <ellipse cx="49" cy="42" rx="5.5" ry="5.5" fill="#1e293b" />
+      <ellipse cx="73" cy="42" rx="5.5" ry="5.5" fill="#1e293b" />
+      <circle cx="51" cy="40" r="2" fill="#ffffff" />
+      <circle cx="75" cy="40" r="2" fill="#ffffff" />
+
+      {/* Beak */}
+      <polygon points="58,46 52,54 64,54" fill="#ff9600" />
+      <polygon points="58,55 54,54 62,54" fill="#e07b00" />
+
+      {/* Feet */}
+      <ellipse cx="46" cy="88" rx="8" ry="4.5" fill="#ff9600" />
+      <ellipse cx="70" cy="88" rx="8" ry="4.5" fill="#ff9600" />
+    </svg>
+  );
+}
+
+function ThreeShieldsHeroSVG() {
+  return (
+    <svg viewBox="0 0 240 130" width="220" height="120" style={{ overflow: "visible" }}>
+      <defs>
+        {/* Bronze Shield Gradients */}
+        <linearGradient id="heroBronze" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#e5a067" />
+          <stop offset="50%" stopColor="#c57a3e" />
+          <stop offset="100%" stopColor="#965320" />
+        </linearGradient>
+        <linearGradient id="heroBronzeInner" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#f3be8a" />
+          <stop offset="100%" stopColor="#b66a2f" />
+        </linearGradient>
+
+        {/* Gold Shield Gradients */}
+        <linearGradient id="heroGold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ffe600" />
+          <stop offset="40%" stopColor="#ffc800" />
+          <stop offset="100%" stopColor="#f59e0b" />
+        </linearGradient>
+        <linearGradient id="heroGoldInner" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#fff385" />
+          <stop offset="100%" stopColor="#fbbf24" />
+        </linearGradient>
+
+        {/* Silver Shield Gradients */}
+        <linearGradient id="heroSilver" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#e2e8f0" />
+          <stop offset="50%" stopColor="#cbd5e1" />
+          <stop offset="100%" stopColor="#94a3b8" />
+        </linearGradient>
+        <linearGradient id="heroSilverInner" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#f8fafc" />
+          <stop offset="100%" stopColor="#cbd5e1" />
+        </linearGradient>
+      </defs>
+
+      {/* Sparkles / Diamonds around Gold Shield */}
+      <g fill="#ffe600">
+        <polygon points="98,16 102,22 108,24 102,26 98,32 94,26 88,24 94,22" />
+        <polygon points="120,6 122,11 127,12 122,13 120,18 118,13 113,12 118,11" />
+        <polygon points="144,14 147,19 152,20 147,21 144,26 141,21 136,20 141,19" />
+        <polygon points="170,42 172,46 177,47 172,48 170,52 168,48 163,47 168,46" />
+      </g>
+
+      {/* Left: Bronze Shield (tilted -14deg) */}
+      <g transform="translate(68, 62) rotate(-14) translate(-40, -45)">
+        <path
+          d="M 40 4 C 62 4, 76 16, 76 34 C 76 64, 56 80, 40 88 C 24 80, 4 64, 4 34 C 4 16, 18 4, 40 4 Z"
+          fill="url(#heroBronze)"
+          stroke="#783e15"
+          strokeWidth="3.5"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M 40 10 C 58 10, 69 19, 69 34 C 69 58, 52 72, 40 79 C 28 72, 11 58, 11 34 C 11 19, 22 10, 40 10 Z"
+          fill="url(#heroBronzeInner)"
+          opacity="0.85"
+        />
+        <path
+          d="M 40 10 C 40 10, 40 79, 40 79 C 28 72, 11 58, 11 34 C 11 19, 22 10, 40 10 Z"
+          fill="#ffffff"
+          opacity="0.18"
+        />
+      </g>
+
+      {/* Right: Silver Shield (tilted +14deg) */}
+      <g transform="translate(172, 62) rotate(14) translate(-40, -45)">
+        <path
+          d="M 40 4 C 62 4, 76 16, 76 34 C 76 64, 56 80, 40 88 C 24 80, 4 64, 4 34 C 4 16, 18 4, 40 4 Z"
+          fill="url(#heroSilver)"
+          stroke="#475569"
+          strokeWidth="3.5"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M 40 10 C 58 10, 69 19, 69 34 C 69 58, 52 72, 40 79 C 28 72, 11 58, 11 34 C 11 19, 22 10, 40 10 Z"
+          fill="url(#heroSilverInner)"
+          opacity="0.85"
+        />
+        <path
+          d="M 40 10 C 40 10, 40 79, 40 79 C 28 72, 11 58, 11 34 C 11 19, 22 10, 40 10 Z"
+          fill="#ffffff"
+          opacity="0.25"
+        />
+      </g>
+
+      {/* Center: Gold Shield (larger, facing forward, with feather emblem) */}
+      <g transform="translate(120, 58) translate(-46, -52)">
+        <path
+          d="M 46 4 C 72 4, 88 17, 88 38 C 88 72, 65 92, 46 100 C 27 92, 4 72, 4 38 C 4 17, 20 4, 46 4 Z"
+          fill="url(#heroGold)"
+          stroke="#b45309"
+          strokeWidth="4"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M 46 11 C 67 11, 80 21, 80 38 C 80 66, 60 83, 46 90 C 32 83, 12 66, 12 38 C 12 21, 25 11, 46 11 Z"
+          fill="url(#heroGoldInner)"
+          opacity="0.95"
+        />
+        <path
+          d="M 46 11 C 46 11, 46 90, 46 90 C 32 83, 12 66, 12 38 C 12 21, 25 11, 46 11 Z"
+          fill="#ffffff"
+          opacity="0.22"
+        />
+        <g transform="translate(46, 50) rotate(-28)">
+          <path
+            d="M 0 -24 C 8 -16, 9 6, 0 22 C -9 6, -8 -16, 0 -24 Z"
+            fill="#d97706"
+          />
+          <path
+            d="M 0 -25 L 0 24"
+            stroke="#92400e"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+          />
+          <path
+            d="M -5 -6 L 0 -10 M 5 -4 L 0 -8 M -6 4 L 0 0 M 6 6 L 0 2"
+            stroke="#b45309"
+            strokeWidth="1.2"
+          />
+        </g>
+      </g>
+    </svg>
+  );
+}
+
+// ==========================================
+// Leaderboard Right Rail Component
+// ==========================================
+
 function LeaderboardRail({
   currentUser,
   currentRank,
   userConfig,
   targetXpGap,
   isLocked,
-  remainingLessons,
 }: {
   currentUser?: User;
   currentRank: number;
@@ -359,6 +545,55 @@ function LeaderboardRail({
   isLocked: boolean;
   remainingLessons: number;
 }) {
+  if (isLocked) {
+    return (
+      <aside className="right-rail" style={{ width: 360 }}>
+        <div className="card lb-locked-rail-card">
+          <div style={{ flex: 1 }}>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 800,
+                color: "#52656d",
+                letterSpacing: 0.8,
+                textTransform: "uppercase",
+                display: "block",
+                marginBottom: 8,
+              }}
+            >
+              WHAT ARE LEADERBOARDS?
+            </span>
+            <h3
+              style={{
+                fontSize: 16,
+                fontWeight: 800,
+                color: "#ffffff",
+                margin: "0 0 8px",
+                lineHeight: 1.3,
+              }}
+            >
+              Do lessons. Earn XP. Compete.
+            </h3>
+            <p
+              style={{
+                fontSize: 13,
+                fontWeight: 500,
+                color: "#9ca3af",
+                margin: 0,
+                lineHeight: 1.4,
+              }}
+            >
+              Earn XP through lessons, then compete with players in a weekly leaderboard
+            </p>
+          </div>
+          <div style={{ flexShrink: 0, width: 84, display: "flex", justifyContent: "center" }}>
+            <DuoWorkoutSVG />
+          </div>
+        </div>
+      </aside>
+    );
+  }
+
   return (
     <aside className="right-rail">
       {/* 1. User Summary Card */}
@@ -383,7 +618,7 @@ function LeaderboardRail({
 
         <h3 className="lb-user-name">{currentUser?.name ?? "Learner"}</h3>
         <p className="lb-user-rank-label">
-          {isLocked ? "Unranked (Locked)" : `Rank: ${currentRank}`}
+          {`Rank: ${currentRank}`}
         </p>
 
         <div className="lb-quick-stats">
@@ -402,40 +637,23 @@ function LeaderboardRail({
         </div>
 
         <div className="lb-progress-note">
-          {isLocked ? (
-            <>
-              <p>Complete {remainingLessons} more lesson{remainingLessons === 1 ? "" : "s"} to unlock leagues.</p>
-              <div className="progress-track">
-                <div
-                  className="progress-fill"
-                  style={{
-                    width: `${Math.min(100, ((currentUser?.completed_lessons ?? 0) / 10) * 100)}%`,
-                    background: "#58cc02",
-                  }}
-                />
-              </div>
-            </>
-          ) : (
-            <>
-              <p>
-                {targetXpGap > 0
-                  ? `You need ${targetXpGap} XP to reach Rank ${Math.max(1, currentRank - 1)}`
-                  : "You are currently leading in the promotion zone!"}
-              </p>
-              <div className="progress-track">
-                <div
-                  className="progress-fill"
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      Math.max(25, 100 - (targetXpGap / 100) * 50)
-                    )}%`,
-                    background: "#58cc02",
-                  }}
-                />
-              </div>
-            </>
-          )}
+          <p>
+            {targetXpGap > 0
+              ? `You need ${targetXpGap} XP to reach Rank ${Math.max(1, currentRank - 1)}`
+              : "You are currently leading in the promotion zone!"}
+          </p>
+          <div className="progress-track">
+            <div
+              className="progress-fill"
+              style={{
+                width: `${Math.min(
+                  100,
+                  Math.max(25, 100 - (targetXpGap / 100) * 50)
+                )}%`,
+                background: "#58cc02",
+              }}
+            />
+          </div>
         </div>
       </div>
 
@@ -481,11 +699,20 @@ function LeaderboardRail({
 }
 
 // ==========================================
-// Locked Leaderboard Component
+// Locked Leaderboard Exact Component
 // ==========================================
 
+const SKELETON_ROWS = [
+  { nameWidth: 70 },
+  { nameWidth: 110 },
+  { nameWidth: 60 },
+  { nameWidth: 135 },
+  { nameWidth: 80 },
+  { nameWidth: 95 },
+  { nameWidth: 68 },
+];
+
 function LockedLeaderboardView({
-  completed,
   remaining,
   onUnlockTest,
 }: {
@@ -494,113 +721,58 @@ function LockedLeaderboardView({
   onUnlockTest: () => void;
 }) {
   const router = useRouter();
-  const percentage = Math.min(100, Math.max(0, Math.round((completed / 10) * 100)));
 
   return (
-    <div className="leaderboard-container lb-locked-container">
-      <div className="lb-locked-hero">
-        <div className="lb-locked-shield-wrap">
-          <div className="lb-locked-shield-glow" />
-          <svg viewBox="0 0 100 115" width="110" height="126" style={{ overflow: "visible" }}>
-            <defs>
-              <linearGradient id="lockedBronzeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#e39a5c" />
-                <stop offset="50%" stopColor="#c57a3e" />
-                <stop offset="100%" stopColor="#874312" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M 50 4 L 92 15 C 92 65 76 96 50 110 C 24 96 8 65 8 15 Z"
-              fill="url(#lockedBronzeGrad)"
-              stroke="#5a2b0c"
-              strokeWidth="4"
-              strokeLinejoin="round"
-            />
-            <g transform="translate(35, 42)">
-              <rect x="3" y="12" width="24" height="20" rx="5" fill="#ffffff" />
-              <path
-                d="M 8 12 V 7 C 8 3 11 0 15 0 C 19 0 22 3 22 7 V 12"
-                fill="none"
-                stroke="#ffffff"
-                strokeWidth="4.5"
-                strokeLinecap="round"
-              />
-              <circle cx="15" cy="20" r="2.8" fill="#c57a3e" />
-            </g>
-          </svg>
-        </div>
+    <div className="lb-locked-duo-container">
+      <div className="lb-three-shields-wrap">
+        <ThreeShieldsHeroSVG />
+      </div>
 
-        <h1 className="lb-locked-title">Unlock Leaderboards!</h1>
-        <p className="lb-locked-desc">
-          Complete {remaining} more lesson{remaining === 1 ? "" : "s"} to start competing in weekly leagues.
-        </p>
+      <h1 className="lb-locked-hero-title">Unlock Leaderboards!</h1>
+      <p className="lb-locked-hero-subtitle">
+        Complete {remaining} more lesson{remaining === 1 ? "" : "s"} to start competing
+      </p>
 
-        <div className="lb-locked-progress-card">
-          <div className="lb-locked-progress-header">
-            <span>{completed} / 10 LESSONS COMPLETED</span>
-            <b>{percentage}%</b>
+      <button
+        className="lb-duo-start-btn"
+        onClick={() => router.push("/learn")}
+      >
+        START A LESSON
+      </button>
+
+      {/* Duolingo Ghost Leaderboard Rows */}
+      <div className="lb-skeleton-list">
+        {SKELETON_ROWS.map((row, idx) => (
+          <div key={idx} className="lb-skeleton-row">
+            <div className="lb-skeleton-dot" />
+            <div className="lb-skeleton-avatar" />
+            <div className="lb-skeleton-name" style={{ width: row.nameWidth }} />
+            <div className="lb-skeleton-xp" />
           </div>
-          <div className="progress-track" style={{ height: 16 }}>
-            <div
-              className="progress-fill"
-              style={{
-                width: `${percentage}%`,
-                background: "#58cc02",
-              }}
-            />
-          </div>
-        </div>
+        ))}
+      </div>
 
+      <div style={{ marginTop: 36, textAlign: "center" }}>
         <button
-          className="raised primary lb-locked-cta-btn"
-          onClick={() => router.push("/learn")}
+          onClick={onUnlockTest}
+          style={{
+            fontSize: 11,
+            fontWeight: 800,
+            background: "transparent",
+            border: "1px dashed #37464f",
+            color: "#64748b",
+            borderRadius: 8,
+            padding: "6px 12px",
+            cursor: "pointer",
+          }}
         >
-          START A LESSON
+          ⚡ Dev Mode: Toggle Leaderboards Unlocked
         </button>
-
-        <div className="lb-locked-features-grid">
-          <div className="lb-locked-feature-card">
-            <span className="lb-feature-icon">🏆</span>
-            <div>
-              <b>Climb weekly leagues</b>
-              <p>Compete with 30 learners every week and earn XP to promote from Bronze to Diamond.</p>
-            </div>
-          </div>
-          <div className="lb-locked-feature-card">
-            <span className="lb-feature-icon">⚡</span>
-            <div>
-              <b>Finish in the top 7</b>
-              <p>Top learners in the promotion zone advance to the next league every Sunday.</p>
-            </div>
-          </div>
-          <div className="lb-locked-feature-card">
-            <span className="lb-feature-icon">🔥</span>
-            <div>
-              <b>Keep your streak</b>
-              <p>Daily lessons build your streak, protect your hearts, and boost your league rank.</p>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ marginTop: 24, textAlign: "center" }}>
-          <button
-            className="raised"
-            style={{
-              padding: "9px 18px",
-              fontSize: 13,
-              fontWeight: 900,
-              color: "var(--muted)",
-              background: "var(--surface)",
-            }}
-            onClick={onUnlockTest}
-          >
-            ⚡ Quick Demo: Unlock Leaderboards (Test Mode)
-          </button>
-        </div>
       </div>
     </div>
   );
 }
+
 
 // ==========================================
 // Main Leaderboard Page Component
