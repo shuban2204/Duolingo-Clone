@@ -1,6 +1,5 @@
 "use client";
 
-import { Duo } from "@/components/duo";
 import { setUserId } from "@/lib/api";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
@@ -49,8 +48,13 @@ export default function Landing() {
     <main className="landing">
       <header className="landing-header">
         <Link className="landing-brand" href="/" aria-label="Duolingo home">
-          <Duo size={39} />
-          <span>duolingo</span>
+          <Image
+            src="/duolingo-wordmark.svg"
+            alt="Duolingo"
+            width={179}
+            height={42}
+            priority
+          />
         </Link>
         <details className="language-menu">
           <summary>SITE LANGUAGE: ENGLISH <ChevronDown size={18} aria-hidden="true" /></summary>
