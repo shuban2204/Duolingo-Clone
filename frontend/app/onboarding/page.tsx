@@ -1,6 +1,6 @@
 "use client";
 
-import { Duo } from "@/components/duo";
+import { AnimatedDuo } from "@/components/animated-duo";
 import { LessonLoader } from "@/components/lesson-loader";
 import { setUserId } from "@/lib/api";
 import { ArrowLeft, BarChart3, BookOpen, Check, Compass, Crown, Sigma } from "lucide-react";
@@ -48,7 +48,7 @@ export default function OnboardingPage() {
     <main className="onboarding-page">
       <header className="onboarding-progress"><button onClick={goBack} aria-label="Go back"><ArrowLeft /></button><div><span style={{ width: `${progress}%` }} /></div></header>
       <section className="onboarding-content">
-        <div className="onboarding-guide"><Duo size={112} state={step === "course" ? "reading" : "neutral"} /><div className="speech-bubble">{step === "course" ? "What would you like to learn?" : step === "level" ? "Okay, we’ll start fresh!" : "Now let’s find the best place to start!"}</div></div>
+        <div className="onboarding-guide"><AnimatedDuo size={112} /><div className="speech-bubble">{step === "course" ? "What would you like to learn?" : step === "level" ? "Okay, we’ll start fresh!" : "Now let’s find the best place to start!"}</div></div>
         {step === "course" && <div className="onboarding-grid">{courses.map((item) => <button key={item.name} className={`onboarding-card ${course === item.name ? "selected" : ""}`} onClick={() => item.active && setCourse(item.name)} aria-disabled={!item.active}><span className={`course-icon course-${item.name.toLowerCase()}`}>{item.name === "Chess" ? "♜" : item.name === "Math" ? "÷" : ""}</span><span><b>{item.name}</b><small>{item.detail}</small></span>{course === item.name && <Check />}</button>)}</div>}
         {step === "level" && <div className="onboarding-list">{levels.map((item, index) => <button key={item} className={`onboarding-card ${level === index ? "selected" : ""}`} onClick={() => setLevel(index)}><BarChart3 /><b>{item}</b></button>)}</div>}
         {step === "start" && <div className="onboarding-list start-list"><button className={`onboarding-card start-card ${start === "scratch" ? "selected" : ""}`} onClick={() => setStart("scratch")}><BookOpen /><span><b>Start from scratch</b><small>Take the easiest lesson of the Spanish course</small></span></button><button className={`onboarding-card start-card ${start === "placement" ? "selected" : ""}`} onClick={() => setStart("placement")}><Compass /><span><b>Find my level</b><small>Let Duo recommend where you should start learning</small></span></button><div className="onboarding-perks"><span><Crown /> Personalized path</span><span><Sigma /> Skill-aware practice</span></div></div>}
