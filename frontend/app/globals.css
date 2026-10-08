@@ -1058,3 +1058,460 @@ a { color:inherit; text-decoration:none; }
     width: 100%;
   }
 }
+
+/* ========================================================
+   Duolingo Leaderboard Styles
+   ======================================================== */
+
+.leaderboard-container {
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+  padding-bottom: 60px;
+}
+
+.leaderboard-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px 0 24px;
+}
+
+.league-shields-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.league-shield-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.league-shield-item.active {
+  transform: scale(1.18);
+  filter: drop-shadow(0 6px 14px rgba(201, 128, 62, 0.45));
+}
+
+.league-shield-item.locked {
+  opacity: 0.85;
+}
+
+.leaderboard-title {
+  font-size: 28px;
+  font-weight: 1000;
+  color: var(--ink);
+  margin: 0 0 6px;
+  letter-spacing: -0.5px;
+}
+
+.leaderboard-subtitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+
+.leaderboard-countdown {
+  font-size: 15px;
+  font-weight: 900;
+  color: #ff9600;
+  margin: 0;
+}
+
+.leaderboard-divider {
+  width: 100%;
+  height: 2px;
+  background-color: var(--line);
+  margin: 22px 0 12px;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: transparent;
+  transition: background-color 0.12s ease, transform 0.1s ease;
+  user-select: none;
+  min-height: 64px;
+}
+
+.leaderboard-row:hover {
+  background-color: var(--surface-soft);
+}
+
+.leaderboard-row.current-user {
+  background-color: #f0fdf4;
+  border: 2px solid #58cc02;
+  box-shadow: 0 2px 10px rgba(88, 204, 2, 0.16);
+}
+
+.dark .leaderboard-row.current-user {
+  background-color: #143026;
+  border: 2px solid #58cc02;
+  box-shadow: 0 2px 14px rgba(88, 204, 2, 0.22);
+}
+
+.leaderboard-rank-col {
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 14px;
+}
+
+.rank-number {
+  font-size: 16px;
+  font-weight: 900;
+  color: #a0abb0;
+}
+
+.rank-number.promotion {
+  color: #58cc02;
+}
+
+.rank-medal-svg {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+
+.leaderboard-avatar-col {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  margin-right: 18px;
+  flex-shrink: 0;
+}
+
+.leaderboard-avatar-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.leaderboard-avatar-flag {
+  position: absolute;
+  bottom: -2px;
+  right: -3px;
+  width: 17px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1.5px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  background: #fff;
+}
+
+.dark .leaderboard-avatar-flag {
+  border-color: #131f24;
+}
+
+.leaderboard-name-col {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.leaderboard-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #2b3438;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.2px;
+}
+
+.dark .leaderboard-name {
+  color: #f1f7f8;
+}
+
+.leaderboard-row.current-user .leaderboard-name {
+  color: #15803d;
+  font-weight: 900;
+}
+
+.dark .leaderboard-row.current-user .leaderboard-name {
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.current-user-pill {
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #58cc02;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.leaderboard-xp-col {
+  margin-left: 16px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.leaderboard-xp {
+  font-size: 15px;
+  font-weight: 800;
+  color: #777777;
+  letter-spacing: 0.02em;
+}
+
+.dark .leaderboard-xp {
+  color: #94a3b8;
+}
+
+.leaderboard-row.current-user .leaderboard-xp {
+  color: #15803d;
+  font-weight: 900;
+}
+
+.dark .leaderboard-row.current-user .leaderboard-xp {
+  color: #58cc02;
+  font-weight: 900;
+}
+
+.promotion-zone-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+  padding: 0 8px;
+}
+
+.promotion-line {
+  flex: 1;
+  height: 2px;
+  background-color: #d7ffb8;
+}
+
+.dark .promotion-line {
+  background-color: #1e4536;
+}
+
+.promotion-tag {
+  font-size: 11.5px;
+  font-weight: 900;
+  color: #46a302;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #f0fdf4;
+  padding: 3px 10px;
+  border-radius: 8px;
+  border: 1px solid #bbf7d0;
+}
+
+.dark .promotion-tag {
+  background: #143026;
+  color: #58cc02;
+  border-color: #166534;
+}
+
+/* ========================================================
+   Leaderboard Right Rail Styles
+   ======================================================= */
+
+.lb-rail-card {
+  padding: 22px;
+  border-radius: 20px;
+}
+
+.lb-user-summary-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.lb-user-avatar-wrap {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(135deg, #ffc800 0%, #ff9600 100%);
+  box-shadow: 0 4px 12px rgba(255, 150, 0, 0.28);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lb-user-avatar-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e5e5e5;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.lb-user-name {
+  font-size: 19px;
+  font-weight: 1000;
+  color: var(--ink);
+  margin: 0 0 2px;
+}
+
+.lb-user-rank-label {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--muted);
+  margin: 0 0 16px;
+}
+
+.lb-quick-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  padding: 12px 8px;
+  background: var(--surface-soft);
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+
+.lb-stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.lb-progress-note {
+  width: 100%;
+  text-align: left;
+}
+
+.lb-progress-note p {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+
+.lb-status-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.lb-status-badge {
+  aspect-ratio: 1;
+  border-radius: 14px;
+  background: var(--surface-soft);
+  border: 2px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: transform 0.12s ease;
+}
+
+.lb-status-badge:hover {
+  transform: translateY(-2px);
+  border-color: #84d8ff;
+}
+
+.lb-super-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #091a24 0%, #162a36 100%);
+  color: white;
+  border: 2px solid #243b48;
+}
+
+.dark .lb-super-card {
+  background: linear-gradient(135deg, #112028 0%, #1b3240 100%);
+}
+
+.lb-super-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.lb-super-word {
+  font-size: 15px;
+  font-weight: 1000;
+  letter-spacing: 0.12em;
+  background: linear-gradient(90deg, #00d2ff, #00e575, #ff2a85);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lb-super-card h3 {
+  font-size: 17px;
+  font-weight: 900;
+  margin: 0 0 6px;
+  color: #ffffff;
+}
+
+.lb-super-card p {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #b3c5ce;
+  margin: 0 0 16px;
+  line-height: 1.4;
+}
+
+.lb-super-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: #1cb0f6;
+  border: 0;
+  border-bottom: 4px solid #1899d6;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.lb-super-btn:hover {
+  filter: brightness(1.08);
+}
+
+.lb-super-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}

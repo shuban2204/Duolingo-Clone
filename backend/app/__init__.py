@@ -1,2 +1,1 @@
 """Duolingo clone API."""
-

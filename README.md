@@ -62,6 +62,55 @@ The browser makes same-origin requests to the Next.js application. Next.js forwa
 
 More implementation details are available in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
+## Database schema
+
+The relational schema is implemented in SQLAlchemy 2 with migrations managed by Alembic. It models curriculum content, user state, lesson attempts, and gamification mechanics:
+
+| Table | Purpose & Key Fields |
+| --- | --- |
+| `users` | Learner account (`id`, `name`, `avatar`, `total_xp`, `hearts`, `gems`, `current_streak`, `longest_streak`, `streak_freezes`, `daily_goal`, `league`, `theme`, `sound_enabled`) |
+| `courses` | Course catalog (`id`, `title`, `language`, `flag`) |
+| `units` | Sequential curriculum units (`id`, `course_id`, `title`, `description`, `position`, `reward_gems`) |
+| `skills` | Skill nodes on the learning path (`id`, `unit_id`, `title`, `description`, `icon`, `position`, `prerequisite_skill_id`) |
+| `lessons` | Lessons contained within each skill (`id`, `skill_id`, `title`, `position`, `base_xp`) |
+| `exercises` | Individual exercises (`id`, `lesson_id`, `type`, `instruction`, `prompt`, `payload`, `accepted_answers`, `canonical_answer`, `explanation`, `audio_text`, `position`) |
+| `user_courses` | Course enrollment and mastery score (`id`, `user_id`, `course_id`, `active`, `course_score`) |
+| `user_skill_progress` | Skill completion state (`id`, `user_id`, `skill_id`, `state` [LOCKED/AVAILABLE/IN_PROGRESS/COMPLETED], `crowns`, `legendary`) |
+| `lesson_attempts` | Resumable lesson sessions (`id`, `user_id`, `lesson_id`, `mode`, `status`, `current_position`, `mistakes`, `xp_earned`, `started_at`, `completed_at`, `expires_at`) |
+| `exercise_attempts` | Submitted exercise answers and grading records (`id`, `attempt_id`, `exercise_id`, `sequence`, `submission`, `correct`, `xp_awarded`) |
+| `xp_transactions` | Immutable ledger of XP earnings with idempotency keys (`id`, `user_id`, `amount`, `source`, `idempotency_key`, `earned_at`) |
+| `daily_activity` | Daily performance tracking for streaks and graphs (`id`, `user_id`, `activity_date`, `xp`, `lessons_completed`, `correct_answers`, `minutes`) |
+| `daily_quests` | Daily user objectives (`id`, `user_id`, `quest_date`, `kind`, `title`, `target`, `progress`, `reward_gems`, `claimed`) |
+| `achievements` | Badges and milestones (`id`, `code`, `title`, `description`, `icon`) |
+| `user_achievements` | Unlocked achievements per learner (`id`, `user_id`, `achievement_id`, `earned_at`) |
+| `app_meta` | Key-value store for app content versioning and state flags |
+
+## API overview
+
+All endpoints are prefixed with `/api/v1` and use standard JSON responses. Full interactive Swagger UI docs are hosted at `/docs`.
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/users` | List demo learners for switching accounts |
+| `GET` | `/users/{id}/dashboard` | Retrieve learner profile, stats, streak, hearts, and gems |
+| `PATCH` | `/users/{id}` | Update learner preferences (theme, sound, avatar, goal) |
+| `GET` | `/users/{id}/profile` | Get public profile stats, weekly activity, and achievements |
+| `GET` | `/courses` | List available language courses |
+| `GET` | `/courses/{id}/path` | Learning path with units, skills, crowns, and lock states |
+| `GET` | `/lessons/{id}` | Lesson metadata and exercises (answers stripped) |
+| `POST` | `/attempts` | Start or resume an active lesson attempt |
+| `GET` | `/attempts/{id}` | Retrieve attempt state and current exercise |
+| `POST` | `/attempts/{id}/answers` | Submit an exercise answer for server-side grading |
+| `POST` | `/attempts/{id}/complete` | Finish lesson, award XP/crowns, advance streak, check quests |
+| `POST` | `/attempts/{id}/abandon` | Abandon an ongoing attempt |
+| `GET` | `/practice` | Get recommended lesson for timed/mistake review |
+| `POST` | `/hearts/refill` | Refill hearts using earned gems |
+| `POST` | `/shop/purchases` | Purchase streak freezes or heart refills with gems |
+| `GET` | `/quests` | Retrieve daily quests and progress |
+| `POST` | `/quests/{id}/claim` | Claim gems for completed quest |
+| `GET` | `/leaderboard` | View weekly Gold League rankings |
+| `POST` | `/dev/users/{id}/*` | Developer demo endpoints (advance-day, fill-hearts, restore-seed) |
+
 ## Repository structure
 
 ```text

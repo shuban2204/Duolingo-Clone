@@ -7,12 +7,13 @@ from fastapi.responses import JSONResponse
 
 from .api import router
 from .config import settings
-from .database import SessionLocal
+from .database import Base, SessionLocal, engine
 from .seed import seed_database
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    Base.metadata.create_all(bind=engine)
     with SessionLocal() as db:
         seed_database(db)
     yield
@@ -32,7 +33,10 @@ app.add_middleware(
 async def domain_exception(_request: Request, exc: HTTPException):
     if isinstance(exc.detail, dict) and "code" in exc.detail:
         return JSONResponse(status_code=exc.status_code, content=exc.detail)
-    return JSONResponse(status_code=exc.status_code, content={"code": "http_error", "message": str(exc.detail), "details": {}})
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"code": "http_error", "message": str(exc.detail), "details": {}},
+    )
 
 
 @app.get("/health")

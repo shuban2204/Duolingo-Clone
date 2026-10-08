@@ -9,9 +9,29 @@ from app.models import Exercise, ExerciseType, User
 
 
 def test_text_and_match_graders():
-    text = Exercise(lesson_id=1, type=ExerciseType.TYPE_ANSWER, instruction="", prompt="", payload={}, accepted_answers=["adiós", "adios"], canonical_answer="adiós", explanation="", position=1)
+    text = Exercise(
+        lesson_id=1,
+        type=ExerciseType.TYPE_ANSWER,
+        instruction="",
+        prompt="",
+        payload={},
+        accepted_answers=["adiós", "adios"],
+        canonical_answer="adiós",
+        explanation="",
+        position=1,
+    )
     assert answer_is_correct(text, "  ADIOS! ")
-    match = Exercise(lesson_id=1, type=ExerciseType.MATCH_PAIRS, instruction="", prompt="", payload={}, accepted_answers=[[["hola", "hello"], ["agua", "water"]]], canonical_answer="", explanation="", position=2)
+    match = Exercise(
+        lesson_id=1,
+        type=ExerciseType.MATCH_PAIRS,
+        instruction="",
+        prompt="",
+        payload={},
+        accepted_answers=[[["hola", "hello"], ["agua", "water"]]],
+        canonical_answer="",
+        explanation="",
+        position=2,
+    )
     assert answer_is_correct(match, [["agua", "water"], ["hola", "hello"]])
 
 
@@ -40,6 +60,6 @@ def test_schema_creates_on_sqlite():
     engine = create_engine("sqlite:///:memory:")
     Base.metadata.create_all(engine)
     with Session(engine) as db:
-        db.add(User(name="Schema")); db.commit()
+        db.add(User(name="Schema"))
+        db.commit()
         assert db.scalar(select(User).where(User.name == "Schema")) is not None
-

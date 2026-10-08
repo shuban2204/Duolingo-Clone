@@ -58,4 +58,3 @@ class AttemptView(BaseModel):
     started_at: datetime
     expires_at: datetime | None
     exercises: list[PublicExercise]
-

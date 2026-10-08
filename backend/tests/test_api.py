@@ -10,7 +10,9 @@ from app.seed import seed_database
 
 
 def make_client(tmp_path: Path) -> TestClient:
-    engine = create_engine(f"sqlite:///{tmp_path / 'test.db'}", connect_args={"check_same_thread": False})
+    engine = create_engine(
+        f"sqlite:///{tmp_path / 'test.db'}", connect_args={"check_same_thread": False}
+    )
     Base.metadata.create_all(engine)
     factory = sessionmaker(bind=engine, expire_on_commit=False)
     with factory() as db:
@@ -47,7 +49,13 @@ def test_locked_lesson_is_rejected(tmp_path: Path):
 def test_wrong_answer_costs_a_heart(tmp_path: Path):
     with make_client(tmp_path) as client:
         headers = {"X-Demo-User-Id": "1"}
-        attempt = client.post("/api/v1/attempts", headers=headers, json={"lesson_id": 1, "mode": "STANDARD"}).json()
-        result = client.post(f"/api/v1/attempts/{attempt['id']}/answers", headers=headers, json={"exercise_id": attempt["exercises"][0]["id"], "answer": "definitely wrong"})
+        attempt = client.post(
+            "/api/v1/attempts", headers=headers, json={"lesson_id": 1, "mode": "STANDARD"}
+        ).json()
+        result = client.post(
+            f"/api/v1/attempts/{attempt['id']}/answers",
+            headers=headers,
+            json={"exercise_id": attempt["exercises"][0]["id"], "answer": "definitely wrong"},
+        )
         assert result.status_code == 200
         assert result.json()["hearts"] == 3

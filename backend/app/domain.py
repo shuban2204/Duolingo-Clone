@@ -24,7 +24,9 @@ def insert_for_database(db: Session, model: type[m.Base]):
 
 
 def domain_error(status: int, code: str, message: str, **details: Any) -> HTTPException:
-    return HTTPException(status_code=status, detail={"code": code, "message": message, "details": details})
+    return HTTPException(
+        status_code=status, detail={"code": code, "message": message, "details": details}
+    )
 
 
 def aware(value: datetime) -> datetime:
@@ -48,7 +50,11 @@ def regenerate_hearts(user: m.User, now: datetime | None = None) -> None:
     gained = int(elapsed.total_seconds() // (HEART_REGEN_HOURS * 3600))
     if gained:
         user.hearts = min(MAX_HEARTS, user.hearts + gained)
-        user.hearts_updated_at = now if user.hearts == MAX_HEARTS else aware(user.hearts_updated_at) + timedelta(hours=HEART_REGEN_HOURS * gained)
+        user.hearts_updated_at = (
+            now
+            if user.hearts == MAX_HEARTS
+            else aware(user.hearts_updated_at) + timedelta(hours=HEART_REGEN_HOURS * gained)
+        )
 
 
 def normalize_text(value: Any) -> str:
@@ -69,14 +75,22 @@ def answer_is_correct(exercise: m.Exercise, answer: Any) -> bool:
 
 def get_activity(db: Session, user: m.User, day: date | None = None) -> m.DailyActivity:
     day = day or local_day(user)
-    activity = db.scalar(select(m.DailyActivity).where(m.DailyActivity.user_id == user.id, m.DailyActivity.activity_date == day))
+    activity = db.scalar(
+        select(m.DailyActivity).where(
+            m.DailyActivity.user_id == user.id, m.DailyActivity.activity_date == day
+        )
+    )
     if not activity:
         db.execute(
             insert_for_database(db, m.DailyActivity)
             .values(user_id=user.id, activity_date=day)
             .on_conflict_do_nothing(index_elements=["user_id", "activity_date"])
         )
-        activity = db.scalar(select(m.DailyActivity).where(m.DailyActivity.user_id == user.id, m.DailyActivity.activity_date == day))
+        activity = db.scalar(
+            select(m.DailyActivity).where(
+                m.DailyActivity.user_id == user.id, m.DailyActivity.activity_date == day
+            )
+        )
         if activity is None:
             raise RuntimeError("Daily activity could not be initialized")
     return activity
@@ -84,18 +98,38 @@ def get_activity(db: Session, user: m.User, day: date | None = None) -> m.DailyA
 
 def ensure_quests(db: Session, user: m.User) -> list[m.DailyQuest]:
     day = local_day(user)
-    quests = list(db.scalars(select(m.DailyQuest).where(m.DailyQuest.user_id == user.id, m.DailyQuest.quest_date == day).order_by(m.DailyQuest.id)))
+    quests = list(
+        db.scalars(
+            select(m.DailyQuest)
+            .where(m.DailyQuest.user_id == user.id, m.DailyQuest.quest_date == day)
+            .order_by(m.DailyQuest.id)
+        )
+    )
     if not quests:
-        definitions = [("XP", "Earn 20 XP", 20), ("LESSONS", "Complete 1 lesson", 1), ("CORRECT", "Get 5 exercises correct", 5)]
+        definitions = [
+            ("XP", "Earn 20 XP", 20),
+            ("LESSONS", "Complete 1 lesson", 1),
+            ("CORRECT", "Get 5 exercises correct", 5),
+        ]
         for kind, title, target in definitions:
             db.execute(
                 insert_for_database(db, m.DailyQuest)
                 .values(user_id=user.id, quest_date=day, kind=kind, title=title, target=target)
                 .on_conflict_do_nothing(index_elements=["user_id", "quest_date", "kind"])
             )
-        quests = list(db.scalars(select(m.DailyQuest).where(m.DailyQuest.user_id == user.id, m.DailyQuest.quest_date == day).order_by(m.DailyQuest.id)))
+        quests = list(
+            db.scalars(
+                select(m.DailyQuest)
+                .where(m.DailyQuest.user_id == user.id, m.DailyQuest.quest_date == day)
+                .order_by(m.DailyQuest.id)
+            )
+        )
     activity = get_activity(db, user, day)
-    values = {"XP": activity.xp, "LESSONS": activity.lessons_completed, "CORRECT": activity.correct_answers}
+    values = {
+        "XP": activity.xp,
+        "LESSONS": activity.lessons_completed,
+        "CORRECT": activity.correct_answers,
+    }
     for quest in quests:
         quest.progress = min(quest.target, values[quest.kind])
     return quests
@@ -129,11 +163,55 @@ def advance_streak(user: m.User, today: date) -> None:
 
 
 def evaluate_achievements(db: Session, user: m.User) -> list[str]:
-    completed_lessons = db.scalar(select(func.count()).select_from(m.LessonAttempt).where(m.LessonAttempt.user_id == user.id, m.LessonAttempt.status == m.AttemptStatus.COMPLETED)) or 0
-    completed_skills = db.scalar(select(func.count()).select_from(m.UserSkillProgress).where(m.UserSkillProgress.user_id == user.id, m.UserSkillProgress.state == m.ProgressState.COMPLETED)) or 0
-    legendary = db.scalar(select(func.count()).select_from(m.UserSkillProgress).where(m.UserSkillProgress.user_id == user.id, m.UserSkillProgress.legendary.is_(True))) or 0
-    perfect = db.scalar(select(func.count()).select_from(m.LessonAttempt).where(m.LessonAttempt.user_id == user.id, m.LessonAttempt.status == m.AttemptStatus.COMPLETED, m.LessonAttempt.mistakes == 0)) or 0
-    earned_codes = set(db.scalars(select(m.Achievement.code).join(m.UserAchievement, m.UserAchievement.achievement_id == m.Achievement.id).where(m.UserAchievement.user_id == user.id)))
+    completed_lessons = (
+        db.scalar(
+            select(func.count())
+            .select_from(m.LessonAttempt)
+            .where(
+                m.LessonAttempt.user_id == user.id,
+                m.LessonAttempt.status == m.AttemptStatus.COMPLETED,
+            )
+        )
+        or 0
+    )
+    completed_skills = (
+        db.scalar(
+            select(func.count())
+            .select_from(m.UserSkillProgress)
+            .where(
+                m.UserSkillProgress.user_id == user.id,
+                m.UserSkillProgress.state == m.ProgressState.COMPLETED,
+            )
+        )
+        or 0
+    )
+    legendary = (
+        db.scalar(
+            select(func.count())
+            .select_from(m.UserSkillProgress)
+            .where(m.UserSkillProgress.user_id == user.id, m.UserSkillProgress.legendary.is_(True))
+        )
+        or 0
+    )
+    perfect = (
+        db.scalar(
+            select(func.count())
+            .select_from(m.LessonAttempt)
+            .where(
+                m.LessonAttempt.user_id == user.id,
+                m.LessonAttempt.status == m.AttemptStatus.COMPLETED,
+                m.LessonAttempt.mistakes == 0,
+            )
+        )
+        or 0
+    )
+    earned_codes = set(
+        db.scalars(
+            select(m.Achievement.code)
+            .join(m.UserAchievement, m.UserAchievement.achievement_id == m.Achievement.id)
+            .where(m.UserAchievement.user_id == user.id)
+        )
+    )
     eligible = {
         "FIRST_LESSON": completed_lessons >= 1,
         "XP_100": user.total_xp >= 100,
@@ -153,9 +231,34 @@ def evaluate_achievements(db: Session, user: m.User) -> list[str]:
 
 
 def serialize_exercise(exercise: m.Exercise) -> dict[str, Any]:
-    return {"id": exercise.id, "type": exercise.type.value, "instruction": exercise.instruction, "prompt": exercise.prompt, "payload": exercise.payload, "audio_text": exercise.audio_text, "position": exercise.position}
+    return {
+        "id": exercise.id,
+        "type": exercise.type.value,
+        "instruction": exercise.instruction,
+        "prompt": exercise.prompt,
+        "payload": exercise.payload,
+        "audio_text": exercise.audio_text,
+        "position": exercise.position,
+    }
 
 
 def serialize_attempt(db: Session, attempt: m.LessonAttempt) -> dict[str, Any]:
-    exercises = list(db.scalars(select(m.Exercise).where(m.Exercise.lesson_id == attempt.lesson_id).order_by(m.Exercise.position)))
-    return {"id": attempt.id, "lesson_id": attempt.lesson_id, "mode": attempt.mode.value, "status": attempt.status.value, "current_position": attempt.current_position, "mistakes": attempt.mistakes, "xp_earned": attempt.xp_earned, "started_at": attempt.started_at, "expires_at": attempt.expires_at, "exercises": [serialize_exercise(e) for e in exercises]}
+    exercises = list(
+        db.scalars(
+            select(m.Exercise)
+            .where(m.Exercise.lesson_id == attempt.lesson_id)
+            .order_by(m.Exercise.position)
+        )
+    )
+    return {
+        "id": attempt.id,
+        "lesson_id": attempt.lesson_id,
+        "mode": attempt.mode.value,
+        "status": attempt.status.value,
+        "current_position": attempt.current_position,
+        "mistakes": attempt.mistakes,
+        "xp_earned": attempt.xp_earned,
+        "started_at": attempt.started_at,
+        "expires_at": attempt.expires_at,
+        "exercises": [serialize_exercise(e) for e in exercises],
+    }

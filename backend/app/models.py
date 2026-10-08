@@ -105,9 +105,13 @@ class Skill(Base):
     description: Mapped[str] = mapped_column(String(180))
     icon: Mapped[str] = mapped_column(String(12), default="⭐")
     position: Mapped[int]
-    prerequisite_skill_id: Mapped[int | None] = mapped_column(ForeignKey("skills.id"), nullable=True)
+    prerequisite_skill_id: Mapped[int | None] = mapped_column(
+        ForeignKey("skills.id"), nullable=True
+    )
     unit: Mapped[Unit] = relationship(back_populates="skills")
-    lessons: Mapped[list[Lesson]] = relationship(back_populates="skill", cascade="all, delete-orphan")
+    lessons: Mapped[list[Lesson]] = relationship(
+        back_populates="skill", cascade="all, delete-orphan"
+    )
 
 
 class Lesson(Base):
@@ -119,7 +123,9 @@ class Lesson(Base):
     position: Mapped[int]
     base_xp: Mapped[int] = mapped_column(default=20)
     skill: Mapped[Skill] = relationship(back_populates="lessons")
-    exercises: Mapped[list[Exercise]] = relationship(back_populates="lesson", cascade="all, delete-orphan")
+    exercises: Mapped[list[Exercise]] = relationship(
+        back_populates="lesson", cascade="all, delete-orphan"
+    )
 
 
 class Exercise(Base):
