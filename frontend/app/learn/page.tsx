@@ -14,8 +14,8 @@ import { useEffect, useState } from "react";
 type Lesson = Skill["lessons"][number];
 type NodeKind = "star" | "chest" | "duo" | "headphones" | "trophy" | "jump";
 
-const nodeKinds: NodeKind[] = ["star", "star", "chest", "duo", "headphones", "star", "trophy", "chest", "star"];
-const offsets = [0, -58, -98, 112, -48, 50, 0, -72, 35];
+const nodeKinds: NodeKind[] = ["star", "star", "star", "duo", "chest", "star", "trophy", "star", "chest"];
+const offsets = [0, -52, -82, 132, -52, 0, 0, -48, 32];
 const unitColors = ["green", "purple", "teal"];
 const unitTitles = ["Order at a café", "Introduce yourself and greet others", "Talk about travel"];
 
@@ -111,7 +111,7 @@ function LessonNode({ lesson, skill, index, unitLocked, unitPosition }: { lesson
   const jump = unitLocked && index === 0;
   const interactive = completed || current || jump;
   const kind = jump ? "jump" : nodeKinds[index % nodeKinds.length];
-  const mascotOffsets = [112, -145, 132];
+  const mascotOffsets = [132, -118, 120];
   const offset = kind === "duo" ? mascotOffsets[Math.min(unitPosition - 1, mascotOffsets.length - 1)] : offsets[index % offsets.length];
   const label = `${skill.title}, lesson ${lesson.position}${jump ? ", jump here" : current ? ", start here" : completed ? ", completed" : ", locked"}`;
 
