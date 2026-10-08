@@ -38,8 +38,27 @@ function BackToTop() {
 
 function PathDuo() {
   return (
-    <span className="path-mascot path-duo" role="img" aria-label="Duo dancing on the learning path">
-      <span className="path-duo-sprite" aria-hidden="true" />
+    <span className="path-mascot path-duo" role="img" aria-label="Duo bouncing on the learning path">
+      <svg viewBox="0 0 140 150" aria-hidden="true">
+        <circle className="path-duo-pedestal" cx="70" cy="96" r="51" />
+        <circle cx="70" cy="101" r="43" fill="#26373f" opacity=".42" />
+        <g className="path-duo-body">
+          <path className="path-duo-shape" d="M34 72c-5-23-2-44 9-55C51 9 62 9 70 14c11-7 28-5 36 6 8 11 8 31 3 48 11 5 18 14 19 26-3 12-13 21-25 22-5 13-17 20-33 20-17 0-29-8-34-21-13-1-22-9-25-21 2-11 10-19 23-22Z" />
+          <path className="path-duo-mask" d="M39 49c6-17 18-24 30-15 11-10 26-3 32 13 5 15 1 35-8 45-6 7-14 9-23 6-9 3-18 1-24-6-9-10-12-29-7-43Z" />
+          <ellipse cx="54" cy="62" rx="16" ry="22" fill="#fff" />
+          <ellipse cx="86" cy="62" rx="16" ry="22" fill="#fff" />
+          <ellipse cx="59" cy="65" rx="7" ry="11" fill="#3c3c3c" />
+          <ellipse cx="81" cy="65" rx="7" ry="11" fill="#3c3c3c" />
+          <circle cx="61" cy="61" r="2.5" fill="#fff" /><circle cx="79" cy="61" r="2.5" fill="#fff" />
+          <path d="M43 43c7-5 14-6 21-2M77 41c7-4 14-3 20 2" fill="none" stroke="#46a302" strokeWidth="5" strokeLinecap="round" />
+          <path className="path-duo-beak" d="M60 79c6-7 14-7 20 0-3 8-7 11-10 11s-7-3-10-11Z" />
+          <ellipse className="path-duo-belly" cx="70" cy="112" rx="22" ry="15" />
+          <path className="path-duo-wing path-duo-wing-left" d="M35 72C22 75 15 84 14 96c6 9 16 12 27 8Z" />
+          <path className="path-duo-wing path-duo-wing-right" d="M106 70c13 4 20 13 20 25-6 9-16 12-27 8Z" />
+          <ellipse cx="54" cy="131" rx="11" ry="6" fill="#ff9600" />
+          <ellipse cx="87" cy="131" rx="11" ry="6" fill="#ff9600" />
+        </g>
+      </svg>
     </span>
   );
 }
@@ -136,7 +155,7 @@ function LessonNode({ lesson, skill, index, unitLocked, unitPosition, open, onTo
       {locked && open && (
         <motion.aside className="node-info-card" role="status" initial={{ opacity: 0, y: -10, scale: 0.94 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: "spring", stiffness: 420, damping: 28 }} onClick={(event) => event.stopPropagation()}>
           <b>{cardTitle}</b>
-          <p>Complete all levels above to<br />unlock this!</p>
+          <p>Complete all levels above to unlock this!</p>
           <span>LOCKED</span>
         </motion.aside>
       )}

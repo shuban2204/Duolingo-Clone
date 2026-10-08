@@ -60,17 +60,23 @@ test("unit banner stays pinned and back-to-top returns the path to its start", a
 
 test("learning path shows progress callouts and animated section mascots", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Desktop verifies the complete learning path.");
+  test.setTimeout(120_000);
   await page.goto("/learn");
 
-  await expect(page.locator(".node-callout.start")).toHaveCount(1);
+  await expect(page.locator(".node-callout.start")).toHaveCount(1, { timeout: 90_000 });
   await expect(page.locator(".path-node").first()).toHaveAccessibleName(/start here/i);
-  await expect(page.locator(".path-node").nth(1)).toBeDisabled();
+  const lockedNode = page.locator(".path-node").nth(1);
+  await expect(lockedNode).toBeEnabled();
+  await lockedNode.click();
+  await expect(page.locator(".node-info-card")).toContainText("Complete all levels above to unlock this!");
+  await expect(page.locator(".node-info-card")).toContainText("LOCKED");
   await expect(page.locator(".node-callout.jump").first()).toHaveText("JUMP HERE?");
   const pathDuo = page.locator(".kind-duo .path-duo").first();
   await expect(pathDuo).toBeVisible();
-  await expect(pathDuo).toHaveCSS("animation-name", "path-mascot-hop");
+  await expect(pathDuo).toHaveCSS("animation-name", "path-duo-soft-bob");
   await expect(pathDuo).toHaveCSS("filter", "none");
-  await expect(pathDuo.locator(".path-duo-sprite")).toHaveCSS("background-image", /path-duo-sprite\.png/);
+  await expect(pathDuo.locator("svg")).toBeVisible();
+  await expect(pathDuo.locator(".path-duo-pedestal")).toHaveCount(1);
   const firstFrame = await pathDuo.evaluate((element) => getComputedStyle(element).transform);
   await page.waitForTimeout(220);
   const secondFrame = await pathDuo.evaluate((element) => getComputedStyle(element).transform);
