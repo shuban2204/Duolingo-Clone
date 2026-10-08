@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from fastapi import HTTPException
 from sqlalchemy import func, select
+from sqlalchemy.dialects.postgresql import insert as postgresql_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
@@ -13,6 +14,13 @@ from . import models as m
 
 MAX_HEARTS = 5
 HEART_REGEN_HOURS = 4
+
+
+def insert_for_database(db: Session, model: type[m.Base]):
+    """Return an INSERT statement that supports ON CONFLICT on the active database."""
+    if db.get_bind().dialect.name == "postgresql":
+        return postgresql_insert(model)
+    return sqlite_insert(model)
 
 
 def domain_error(status: int, code: str, message: str, **details: Any) -> HTTPException:
@@ -64,7 +72,7 @@ def get_activity(db: Session, user: m.User, day: date | None = None) -> m.DailyA
     activity = db.scalar(select(m.DailyActivity).where(m.DailyActivity.user_id == user.id, m.DailyActivity.activity_date == day))
     if not activity:
         db.execute(
-            sqlite_insert(m.DailyActivity)
+            insert_for_database(db, m.DailyActivity)
             .values(user_id=user.id, activity_date=day)
             .on_conflict_do_nothing(index_elements=["user_id", "activity_date"])
         )
@@ -81,7 +89,7 @@ def ensure_quests(db: Session, user: m.User) -> list[m.DailyQuest]:
         definitions = [("XP", "Earn 20 XP", 20), ("LESSONS", "Complete 1 lesson", 1), ("CORRECT", "Get 5 exercises correct", 5)]
         for kind, title, target in definitions:
             db.execute(
-                sqlite_insert(m.DailyQuest)
+                insert_for_database(db, m.DailyQuest)
                 .values(user_id=user.id, quest_date=day, kind=kind, title=title, target=target)
                 .on_conflict_do_nothing(index_elements=["user_id", "quest_date", "kind"])
             )
