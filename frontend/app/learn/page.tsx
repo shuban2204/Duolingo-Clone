@@ -15,7 +15,7 @@ type Lesson = Skill["lessons"][number];
 type NodeKind = "star" | "chest" | "duo" | "headphones" | "trophy" | "jump";
 
 const nodeKinds: NodeKind[] = ["star", "star", "star", "duo", "chest", "star", "trophy", "star", "chest"];
-const offsets = [0, -52, -82, 132, -52, 0, 0, -48, 32];
+const offsets = [0, -52, -82, 132, -48, 22, 68, 44, -12];
 const unitColors = ["green", "purple", "teal"];
 const unitTitles = ["Order at a café", "Introduce yourself and greet others", "Talk about travel"];
 
@@ -144,7 +144,7 @@ function LessonNode({ lesson, skill, index, unitLocked, unitPosition, open, onTo
   };
 
   return (
-    <motion.div className={`lesson-node-wrap kind-${kind} mascot-unit-${unitPosition} ${open ? "node-details-open" : ""}`} style={{ left: `${offset}px` }} initial={{ opacity: 0, scale: 0.88 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-40px" }}>
+    <motion.div className={`lesson-node-wrap kind-${kind} mascot-unit-${unitPosition} ${open ? "node-details-open" : ""}`} style={{ left: `${offset}px` }} initial={{ opacity: 1, scale: 1 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
       {current && <span className="node-callout start">START</span>}
       {jump && <span className="node-callout jump">JUMP HERE?</span>}
       <span className={`node-pedestal ${current ? "current" : ""} ${completed ? "completed" : ""} ${locked ? "locked" : ""} ${jump ? "jump" : ""}`}>
